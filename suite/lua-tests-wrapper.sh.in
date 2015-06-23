@@ -23,7 +23,7 @@
 # PROXY_TRACE="gdb --batch --command=/Users/jan/projects/in-bzr/mysql-lb/backtrace.gdb --args " \
 MYSQL_TEST_BIN=`which mysqltest` \
 LUA_USER_PATH="@CMAKE_SOURCE_DIR@/lib/?.lua" \
-LUA_PATH="@CMAKE_SOURCE_DIR@/lib/?.lua;;" \
+LUA_PATH="@CMAKE_SOURCE_DIR@/lib/?.lua;@CMAKE_SOURCE_DIR@/tests/suite/base/t/?.lua;;" \
 LUA_CPATH="@CMAKE_SOURCE_DIR@/lib/lib?@CMAKE_SHARED_LIBRARY_SUFFIX@;;" \
 MYSQL_PROXY_VERSION="@CPACK_PACKAGE_VERSION_MAJOR@.@CPACK_PACKAGE_VERSION_MINOR@.@CPACK_PACKAGE_VERSION_PATCH@" \
 top_builddir=@CMAKE_BINARY_DIR@ \
