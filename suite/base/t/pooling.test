@@ -17,22 +17,62 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-connect (conn1,127.0.0.1,root,,,$PROXY_PORT); 
-SELECT counter;
-disconnect conn1;
+#enable_connect_log;
+let $ip= $MYSQL_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= 3306;
+let $admin_port= 4041;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_PASSWORD;
+disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+connect (conn1,$ip,$user,$pwd,,$port); 
+character_set utf8;
+use test;
+set @a=1;
+set autocommit=0;
+SELECT data from user where id = @a;
+set @a=2;
+SELECT data from user where id = @a;
+set @a=3;
+SELECT id, data from user where id = @a;
+set autocommit=1;
+change_user $user,$pwd,test;
+#disconnect conn1;
 
-connect (conn2,127.0.0.1,root,,,$PROXY_PORT); 
-SELECT counter;
-disconnect conn2;
+real_sleep 1;
+ping;
 
-connect (conn3,127.0.0.1,root,,,$PROXY_PORT); 
-SELECT counter;
-disconnect conn3;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
-connect (conn4,127.0.0.1,root,,,$PROXY_PORT); 
-SELECT counter;
-disconnect conn4;
+enable_ps_protocol;
+connect (conn2,$ip,$user,$pwd,,$port); 
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+#disconnect conn2;
 
-connect (conn5,127.0.0.1,root,,,$PROXY_PORT); 
-SELECT counter;
+connect (conn3,$ip,$user,$pwd,,$port); 
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+connection conn1;
+ping;
+connect (conn4,$ip,$user,$pwd,,$port);
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+
+connect (conn5,$ip,$user,$pwd,,$port);
+use test;
+set @a=6;
+SELECT data from user where id = @a;
+real_sleep 1;
 disconnect conn5;
+disconnect conn3;
+disconnect conn4;
+dirty_close conn1;
+dirty_close conn2;

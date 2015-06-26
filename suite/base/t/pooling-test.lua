@@ -17,4 +17,4 @@
  02110-1301  USA
 
  $%ENDLICENSE%$ --]]
-require("rw-splitting")
+require("rw-splitting-conn-simple")
