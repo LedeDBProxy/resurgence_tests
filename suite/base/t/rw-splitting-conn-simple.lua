@@ -99,6 +99,8 @@ function connect_server()
         local s        = proxy.global.backends[i]
         local pool     = s.pool -- we don't have a username yet, try to find a connections which is idling
         cur_idle = pool.users[""].cur_idle_connections
+        local root_cur_idle = pool.users["root"].cur_idle_connections
+        print("  **********************root idle:" .. root_cur_idle)
         --init_phase = pool.init_phase
         local min_idle_conns
         connected_clients = s.connected_clients
@@ -219,9 +221,9 @@ function connect_server()
     end
 
     if proxy.connection.backend_ndx == 0 then
-        --if is_debug then
-        --	print("  [" .. rw_ndx .. "] taking master as default")
-        --end
+        if is_debug then
+        	print("  [" .. rw_ndx .. "] taking master as default")
+        end
         proxy.connection.backend_ndx = rw_ndx
     else
         is_backend_conn_keepalive = true
@@ -235,9 +237,9 @@ function connect_server()
     -- ok, did we got a backend ?
 
     if cur_idle > 0 and proxy.connection.server then 
-        --if is_debug then
-        --	print("  using pooled connection from: " .. proxy.connection.backend_ndx)
-        --end
+        if is_debug then
+        	print("  using pooled connection from: " .. proxy.connection.backend_ndx)
+        end
 
         use_pool_conn = true
 
@@ -245,9 +247,9 @@ function connect_server()
         return proxy.PROXY_IGNORE_RESULT
     end
 
-    --if is_debug then
-    --	print("  [" .. proxy.connection.backend_ndx .. "] idle-conns below min-idle")
-    --end
+    if is_debug then
+    	print("  [" .. proxy.connection.backend_ndx .. "] idle-conns below min-idle")
+    end
 
     -- open a new connection 
 end
@@ -259,26 +261,26 @@ end
 --
 -- auth.packet is the packet
 function read_auth_result( auth )
-    -- local is_debug = proxy.global.config.rwsplit.is_debug
+    local is_debug = proxy.global.config.rwsplit.is_debug
 
-    --if is_debug then
-    --    print("[read_auth_result] " .. proxy.connection.client.src.name)
-    --    print("  using connection from: " .. proxy.connection.backend_ndx)
-    --    print("  server address: " .. proxy.connection.server.dst.name)
-    --    print("  server charset: " .. proxy.connection.server.character_set_client)
-    --end
+    if is_debug then
+        print("[read_auth_result] " .. proxy.connection.client.src.name)
+        print("  using connection from: " .. proxy.connection.backend_ndx)
+        print("  server address: " .. proxy.connection.server.dst.name)
+        print("  server charset: " .. proxy.connection.server.character_set_client)
+    end
     if auth.packet:byte() == proxy.MYSQLD_PACKET_OK then
         -- auth was fine, disconnect from the server
         if not use_pool_conn and is_backend_conn_keepalive then
             proxy.connection.backend_ndx = 0
             --else
-            --if is_debug then
-            --    print("  no need to put the connection to pool ... ok")
-            --end
+            if is_debug then
+                print("  no need to put the connection to pool ... ok")
+            end
         end
-        --if is_debug then
-        --    print("  (read_auth_result) ... ok")
-        --end
+        if is_debug then
+            print("  (read_auth_result) ... ok")
+        end
     elseif auth.packet:byte() == proxy.MYSQLD_PACKET_EOF then
         -- we received either a 
         -- 
@@ -294,7 +296,7 @@ end
 --- 
 -- read/write splitting
 function read_query( packet )
-    --local is_debug = proxy.global.config.rwsplit.is_debug
+    local is_debug = proxy.global.config.rwsplit.is_debug
     local cmd      = commands.parse(packet)
     local c        = proxy.connection.client
     local ps_cnt   = 0

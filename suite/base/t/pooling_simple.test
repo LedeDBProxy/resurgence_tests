@@ -17,7 +17,6 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#enable_connect_log;
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -26,7 +25,6 @@ let $user= $MYSQL_USER;
 let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
-#enable_ps_protocol;
 disable_ps_protocol;
 connect (conn1,$ip,$user,$pwd,,$port); 
 character_set utf8;
@@ -65,8 +63,6 @@ SELECT data from user where id = @a;
 
 real_sleep 1;
 temp_disable_ps_protocol;
-echo "hello world"
-echo $admin_port
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 

@@ -533,7 +533,6 @@ function run_test(filename, basedir)
 			['MYSQL_PASSWORD']  = MYSQL_PASSWORD,
 			['PROXY_HOST']  = PROXY_HOST,
 			['PROXY_PORT']  = PROXY_PORT,
-			['PROXY_CHAIN_PORT']  = PROXY_CHAIN_PORT,
 			['MASTER_PORT'] = PROXY_MASTER_PORT,
 			['SLAVE_PORT'] = PROXY_SLAVE_PORT,
 		}) .. ' ' ..
