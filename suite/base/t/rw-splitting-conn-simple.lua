@@ -100,7 +100,7 @@ function connect_server()
         local pool     = s.pool -- we don't have a username yet, try to find a connections which is idling
         cur_idle = pool.users[""].cur_idle_connections
         local root_cur_idle = pool.users["root"].cur_idle_connections
-        print("  **********************root idle:" .. root_cur_idle)
+        print("  root idle:" .. root_cur_idle)
         --init_phase = pool.init_phase
         local min_idle_conns
         connected_clients = s.connected_clients
@@ -202,6 +202,7 @@ function connect_server()
                     }
                     return proxy.PROXY_SEND_RESULT
                 else
+                    print("  set is_backend_conn_keepalive false")
                     is_backend_conn_keepalive = false
                 end
             end
@@ -354,19 +355,21 @@ function read_query( packet )
         end
     end
 
-    if cmd.type == proxy.COM_QUIT and is_backend_conn_keepalive and not is_in_transaction then
-        -- don't send COM_QUIT to the backend. We manage the connection
-        -- in all aspects.
-        -- proxy.response = {
-        --	type = proxy.MYSQLD_PACKET_OK,
-        -- }
+    if (cmd.type == proxy.COM_QUIT) then
+        if backend_ndx <=0 or (is_backend_conn_keepalive and not is_in_transaction) then
+            -- don't send COM_QUIT to the backend. We manage the connection
+            -- in all aspects.
+            -- proxy.response = {
+            --	type = proxy.MYSQLD_PACKET_OK,
+            -- }
 
-        if is_debug then
-            print("  valid_prepare_stmt_cnt:" .. ps_cnt)
-            print("  (QUIT) current backend   = " .. backend_ndx)
+            if is_debug then
+                print("  valid_prepare_stmt_cnt:" .. ps_cnt)
+                print("  (QUIT) current backend   = " .. backend_ndx)
+            end
+
+            return proxy.PROXY_SEND_NONE
         end
-
-        return proxy.PROXY_SEND_NONE
     end
 
     -- COM_BINLOG_DUMP packet can't be balanced
@@ -725,19 +728,6 @@ function read_query( packet )
     local sql_mode = proxy.connection.client.sql_mode
     local srv_sql_mode = proxy.connection.server.sql_mode
 
-    if is_debug then
-        if sql_mode ~= nil then
-            print("  client sql mode:" .. sql_mode)
-        else
-            print("  client sql mode nil")
-        end
-        if srv_sql_mode ~= nil then
-            print("  server sql mode:" .. srv_sql_mode)
-        else
-            print("  server sql mode nil")
-        end
-    end
-
     if sql_mode == nil then
         sql_mode = ""
     end
@@ -797,16 +787,6 @@ function read_query( packet )
         local clt_charset = proxy.connection.client.charset
         local srv_charset = proxy.connection.server.charset
 
-        if is_debug then
-            if clt_charset ~= nil then
-                print("  client charset:" .. clt_charset)
-            end
-            if srv_charset ~= nil then
-                print("  server charset:" .. srv_charset)
-            end
-        end
-
-
         if clt_charset ~= srv_charset then
             if is_debug then
                 print("  change charset")
@@ -825,15 +805,6 @@ function read_query( packet )
     if not is_charset_client then
         local clt_charset_client = proxy.connection.client.character_set_client
         local srv_charset_client = proxy.connection.server.character_set_client
-
-        if is_debug then
-            if clt_charset_client ~= nil then
-                print("  client charset_client:" .. clt_charset_client)
-            end
-            if srv_charset_client ~= nil then
-                print("  server charset_client:" .. srv_charset_client)
-            end
-        end
 
         if clt_charset_client ~= srv_charset_client then
             if is_debug then
@@ -855,15 +826,6 @@ function read_query( packet )
         local clt_charset_conn = proxy.connection.client.character_set_connection
         local srv_charset_conn = proxy.connection.server.character_set_connection
 
-        if is_debug then
-            if clt_charset_conn ~= nil then
-                print("  client charset_connection:" .. clt_charset_conn)
-            end
-            if srv_charset_conn ~= nil then
-                print("  server charset_connection:" .. srv_charset_conn)
-            end
-        end
-
         if clt_charset_conn ~= srv_charset_conn then
             if is_debug then
                 print("  change server charset conn:")
@@ -882,15 +844,6 @@ function read_query( packet )
     if not is_charset_results then
         local clt_charset_results = proxy.connection.client.character_set_results
         local srv_charset_results = proxy.connection.server.character_set_results
-
-        if is_debug then
-            if clt_charset_results ~= nil then
-                print("  client charset_results:" .. clt_charset_results)
-            end
-            if srv_charset_results ~= nil then
-                print("  server charset_results:" .. srv_charset_results)
-            end
-        end
 
         if clt_charset_results ~= srv_charset_results then
             if is_debug then
@@ -964,6 +917,9 @@ function read_query_result( inj )
         print("   res status:" .. res.query_status)
     end
 
+    if not is_backend_conn_keepalive then
+        proxy.connection.to_be_closed_after_serve_req = true
+    end
     if inj.id ~= 1 and inj.id ~= 3 and inj.id ~= 4 then
         -- ignore the result of the USE <default_db>
         -- the DB might not exist on the backend, what do do ?
