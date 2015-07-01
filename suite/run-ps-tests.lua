@@ -173,7 +173,7 @@ default_slave_options = {
 
 
 tests_to_skip = {}
-local tests_to_skip_filename = 'tests_to_skip.lua' 
+local tests_to_skip_filename = 'pool_tests_to_skip.lua'
 local proxy_list = {}
 default_proxy_name = 'default'
 
