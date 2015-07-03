@@ -15,15 +15,10 @@ set @a=3;
 SELECT id, data from user where id = @a;
 id	data
 3	wb
-rollback;
 set autocommit=1;
-set @a=4;
-SELECT id, data from user where id = @a;
-id	data
-4	lazio
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-2
+1
 use test;
 set @a=2;
 SELECT data from user where id = @a;
@@ -41,7 +36,7 @@ data
 lazio
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-5
+4
 use test;
 set @a=6;
 SELECT data from user where id = @a;

@@ -131,7 +131,7 @@ disconnect conn10;
 
 real_sleep 2;
 connection conn0;
-#assume 6
+#assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 disconnect conn0;
