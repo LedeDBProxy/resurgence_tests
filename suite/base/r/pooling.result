@@ -2,24 +2,6 @@ select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 1
 use test;
-set @a=1;
-set autocommit=0;
-SELECT data from user where id = @a;
-data
-Hello world
-set @a=2;
-SELECT data from user where id = @a;
-data
-jyywb
-set @a=3;
-SELECT id, data from user where id = @a;
-id	data
-3	wb
-set autocommit=1;
-select conn_num from backends where backend_ndx = 1 and user = "root";
-connection_num
-1
-use test;
 set @a=2;
 SELECT data from user where id = @a;
 data
@@ -30,52 +12,10 @@ SELECT data from user where id = @a;
 data
 wb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
-data
-lazio
-select conn_num from backends where backend_ndx = 1 and user = "root";
-connection_num
-1
-use test;
-set @a=6;
+set @a=3;
 SELECT data from user where id = @a;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-1
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-data
-wb
-select conn_num from backends where backend_ndx = 1 and user = "root";
-connection_num
-6
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-data
-wb
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-data
-wb
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-data
-wb
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-data
-wb
-select conn_num from backends where backend_ndx = 1 and user = "root";
-connection_num
-2
-select conn_num from backends where backend_ndx = 1 and user = "root";
-connection_num
-7
+4

@@ -41,11 +41,14 @@ set @a=2;
 SELECT data from user where id = @a;
 set @a=3;
 SELECT id, data from user where id = @a;
+rollback;
 set autocommit=1;
+set @a=4;
+SELECT id, data from user where id = @a;
 
 real_sleep 2;
 connection conn0;
-#assume 1, conn1 is transactional connection
+#assume 2
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 real_sleep 2;
@@ -68,7 +71,7 @@ SELECT data from user where id = @a;
 
 real_sleep 2;
 connection conn0;
-#assume 4
+#assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 real_sleep 2;
@@ -129,8 +132,9 @@ disconnect conn7;
 disconnect conn6;
 disconnect conn10;
 
+real_sleep 2;
 connection conn0;
-#assume 6
+#assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 disconnect conn0;

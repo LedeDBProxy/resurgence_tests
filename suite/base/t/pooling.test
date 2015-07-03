@@ -32,97 +32,31 @@ connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port);
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 connect (conn1,$ip,$user,$pwd,,$port); 
-character_set utf8;
 use test;
-set @a=1;
-set autocommit=0;
-SELECT data from user where id = @a;
 set @a=2;
 SELECT data from user where id = @a;
-set @a=3;
-SELECT id, data from user where id = @a;
-set autocommit=1;
 
-connection conn0;
-#assume 1, conn1 is transactional connection
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+real_sleep 1;
 
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;
-set @a=2;
+set @a=3;
 SELECT data from user where id = @a;
 
+disconnect conn1;
+real_sleep 1;
 connect (conn3,$ip,$user,$pwd,,$port); 
 use test;
 set @a=3;
 SELECT data from user where id = @a;
 
-connect (conn4,$ip,$user,$pwd,,$port);
-use test;
-set @a=4;
-SELECT data from user where id = @a;
+real_sleep 1;
 
-connection conn0;
-#assume 1
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-
-connect (conn5,$ip,$user,$pwd,,$port);
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-
-connection conn0;
-#assume 1
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-
-connect (conn6,$ip,$user,$pwd,,$port);
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-
-real_sleep 2;
-connection conn0;
-#assume 6
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-
-connect (conn7,$ip,$user,$pwd,,$port);
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-
-connect (conn8,$ip,$user,$pwd,,$port);
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-
-connect (conn9,$ip,$user,$pwd,,$port);
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-
-connect (conn10,$ip,$user,$pwd,,$port);
-use test;
-set @a=6;
-SELECT data from user where id = @a;
-
-connection conn0;
-#assume 2
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-
-disconnect conn1;
 disconnect conn2;
 disconnect conn3;
-disconnect conn4;
-disconnect conn5;
-disconnect conn9;
-disconnect conn8;
-disconnect conn7;
-disconnect conn6;
-disconnect conn10;
 
-real_sleep 2;
 connection conn0;
-#assume 7
+#assume 9
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 disconnect conn0;

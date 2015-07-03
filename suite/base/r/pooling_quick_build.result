@@ -36,7 +36,7 @@ data
 lazio
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-1
+4
 use test;
 set @a=6;
 SELECT data from user where id = @a;
@@ -44,7 +44,7 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-1
+5
 use test;
 set @a=6;
 SELECT data from user where id = @a;
@@ -52,7 +52,7 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 use test;
 set @a=6;
 SELECT data from user where id = @a;
@@ -75,7 +75,7 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-2
+5
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-7
+5
