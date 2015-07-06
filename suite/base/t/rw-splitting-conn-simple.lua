@@ -274,7 +274,7 @@ function read_auth_result( auth )
         -- auth was fine, disconnect from the server
         if not use_pool_conn and is_backend_conn_keepalive then
             proxy.connection.backend_ndx = 0
-            --else
+        else
             if is_debug then
                 print("  no need to put the connection to pool ... ok")
             end
