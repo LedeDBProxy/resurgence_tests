@@ -1,0 +1,71 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#enable_connect_log;
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+#assume 1
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connect (conn1,$ip,$user,$pwd,,$port); 
+connect (conn2,$ip,$user,$pwd,,$port); 
+connect (conn3,$ip,$user,$pwd,,$port); 
+connect (conn4,$ip,$user,$pwd,,$port); 
+
+connection conn1;
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+
+connection conn2;
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connection conn3;
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connection conn4;
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connection conn0;
+#assume 1
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+real_sleep 1;
+#assume 5
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disconnect conn0;
+disconnect conn1;
+disconnect conn2;
+disconnect conn3;
+disconnect conn4;

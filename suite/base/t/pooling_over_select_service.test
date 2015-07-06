@@ -32,31 +32,60 @@ connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port);
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 connect (conn1,$ip,$user,$pwd,,$port); 
+connect (conn2,$ip,$user,$pwd,,$port); 
+connect (conn3,$ip,$user,$pwd,,$port); 
+connect (conn4,$ip,$user,$pwd,,$port); 
+connect (conn5,$ip,$user,$pwd,,$port); 
+connect (conn6,$ip,$user,$pwd,,$port); 
+connect (conn7,$ip,$user,$pwd,,$port); 
+connect (conn8,$ip,$user,$pwd,,$port); 
+connect (conn9,$ip,$user,$pwd,,$port); 
+connect (conn10,$ip,$user,$pwd,,$port); 
+
+real_sleep 2;
+
+connection conn6;
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connection conn7;
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connection conn8;
 use test;
 set @a=2;
 SELECT data from user where id = @a;
 
-real_sleep 1;
-
-connect (conn2,$ip,$user,$pwd,,$port); 
+connection conn9;
 use test;
 set @a=3;
 SELECT data from user where id = @a;
 
-disconnect conn1;
-real_sleep 1;
-connect (conn3,$ip,$user,$pwd,,$port); 
+connection conn10;
 use test;
 set @a=3;
 SELECT data from user where id = @a;
-
-real_sleep 1;
-
-disconnect conn2;
-disconnect conn3;
 
 connection conn0;
-#assume 9
+
+#assume 0
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+real_sleep 1;
+#assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 disconnect conn0;
+disconnect conn1;
+disconnect conn2;
+disconnect conn3;
+disconnect conn4;
+disconnect conn5;
+disconnect conn6;
+disconnect conn7;
+disconnect conn8;
+disconnect conn9;
+disconnect conn10;

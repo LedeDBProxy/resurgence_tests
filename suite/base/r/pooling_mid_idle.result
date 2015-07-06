@@ -1,0 +1,29 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+5

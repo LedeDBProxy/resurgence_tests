@@ -17,5 +17,5 @@
  02110-1301  USA
 
  $%ENDLICENSE%$ --]]
-start_ps_proxy('pooling-test.lua')
+start_ps_proxy('pooling_slow_build-test.lua')
 
