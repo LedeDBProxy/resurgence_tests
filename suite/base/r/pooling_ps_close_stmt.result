@@ -66,3 +66,119 @@ connection_num
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 5
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+9
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+data
+jyywb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+9
