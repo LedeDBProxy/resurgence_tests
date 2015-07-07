@@ -38,7 +38,7 @@ connect (conn8,$ip,$user,$pwd,,$port);
 connect (conn9,$ip,$user,$pwd,,$port); 
 connect (conn10,$ip,$user,$pwd,,$port); 
 
-real_sleep 2;
+real_sleep 0.5;
 
 connection conn6;
 use test;
@@ -67,7 +67,7 @@ SELECT data from user where id = @a;
 
 temp_disable_ps_protocol;
 
-real_sleep 1;
+real_sleep 0.5;
 connection conn0;
 #assume 0
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
@@ -109,7 +109,7 @@ SELECT data from user where id = @a;
 disconnect conn1;
 disconnect conn2;
 
-real_sleep 1;
+real_sleep 0.5;
 temp_disable_ps_protocol;
 connection conn0;
 #assume 3

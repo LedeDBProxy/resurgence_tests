@@ -44,13 +44,13 @@ set @a=3;
 SELECT id, data from user where id = @a;
 set autocommit=1;
 
-real_sleep 1;
+real_sleep 0.5;
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;
 set @a=2;
 SELECT data from user where id = @a;
 
-real_sleep 1;
+real_sleep 0.5;
 connect (conn3,$ip,$user,$pwd,,$port); 
 use test;
 set @a=3;
@@ -65,14 +65,14 @@ set @a=4;
 SELECT data from user where id = @a;
 disconnect conn4;
 
-real_sleep 1;
+real_sleep 0.5;
 connect (conn5,$ip,$user,$pwd,,$port);
 use test;
 set @a=6;
 SELECT data from user where id = @a;
 disconnect conn5;
 
-real_sleep 1;
+real_sleep 0.5;
 connect (conn6,$ip,$user,$pwd,,$port);
 use test;
 set @a=6;
@@ -98,7 +98,7 @@ use test;
 set @a=6;
 SELECT data from user where id = @a;
 
-real_sleep 1;
+real_sleep 0.5;
 temp_disable_ps_protocol;
 connection conn0;
 #assume 1

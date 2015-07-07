@@ -60,7 +60,7 @@ connection conn0;
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
-real_sleep 1;
+real_sleep 0.5;
 #assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 

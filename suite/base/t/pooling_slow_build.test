@@ -43,7 +43,7 @@ set @a=3;
 SELECT id, data from user where id = @a;
 set autocommit=1;
 
-real_sleep 2;
+real_sleep 0.5;
 connection conn0;
 #assume 1, conn1 is transactional connection
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
@@ -53,20 +53,20 @@ use test;
 set @a=2;
 SELECT data from user where id = @a;
 
-real_sleep 2;
+real_sleep 0.5;
 
 connect (conn3,$ip,$user,$pwd,,$port); 
 use test;
 set @a=3;
 SELECT data from user where id = @a;
 
-real_sleep 1;
+real_sleep 0.5;
 connect (conn4,$ip,$user,$pwd,,$port);
 use test;
 set @a=4;
 SELECT data from user where id = @a;
 
-real_sleep 2;
+real_sleep 0.5;
 connection conn0;
 #assume 4
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
@@ -76,7 +76,7 @@ use test;
 set @a=6;
 SELECT data from user where id = @a;
 
-real_sleep 2;
+real_sleep 0.5;
 connection conn0;
 #assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
@@ -86,7 +86,7 @@ use test;
 set @a=6;
 SELECT data from user where id = @a;
 
-real_sleep 2;
+real_sleep 0.5;
 connection conn0;
 #assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
@@ -96,25 +96,25 @@ use test;
 set @a=6;
 SELECT data from user where id = @a;
 
-real_sleep 2;
+real_sleep 0.5;
 connect (conn8,$ip,$user,$pwd,,$port);
 use test;
 set @a=6;
 SELECT data from user where id = @a;
 
-real_sleep 2;
+real_sleep 0.5;
 connect (conn9,$ip,$user,$pwd,,$port);
 use test;
 set @a=6;
 SELECT data from user where id = @a;
 
-real_sleep 2;
+real_sleep 0.5;
 connect (conn10,$ip,$user,$pwd,,$port);
 use test;
 set @a=6;
 SELECT data from user where id = @a;
 
-real_sleep 2;
+real_sleep 0.5;
 connection conn0;
 #assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
@@ -130,7 +130,7 @@ disconnect conn7;
 disconnect conn6;
 disconnect conn10;
 
-real_sleep 2;
+real_sleep 0.5;
 connection conn0;
 #assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
