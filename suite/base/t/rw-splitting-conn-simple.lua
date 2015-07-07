@@ -398,6 +398,9 @@ function read_query( packet )
         return
     end
 
+    if is_backend_conn_keepalive then
+        proxy.connection.wait_clt_next_sql = 100
+    end
     -- read/write splitting 
     --
     -- send all non-transactional SELECTs to a slave
