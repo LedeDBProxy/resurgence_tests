@@ -1,0 +1,141 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#enable_connect_log;
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+#assume 1
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+connect (conn6,$ip,$user,$pwd,,$port); 
+connect (conn7,$ip,$user,$pwd,,$port); 
+connect (conn8,$ip,$user,$pwd,,$port); 
+connect (conn9,$ip,$user,$pwd,,$port); 
+connect (conn10,$ip,$user,$pwd,,$port); 
+
+real_sleep 2;
+
+connection conn6;
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connection conn7;
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+
+
+connection conn8;
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+
+connection conn9;
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connection conn10;
+use test;
+set @a=2;
+SELECT data from user where id = @a;
+
+disable_ps_protocol;
+
+real_sleep 2;
+
+connection conn0;
+#assume 5
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+connect (conn11,$ip,$user,$pwd,,$port); 
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+temp_disable_ps_protocol;
+real_sleep 2;
+connection conn0;
+#assume 4
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disconnect conn6;
+
+temp_disable_ps_protocol;
+connection conn0;
+#assume 4
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+connect (conn3,$ip,$user,$pwd,,$port); 
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+disconnect conn3;
+
+temp_disable_ps_protocol;
+connection conn0;
+#assume 4
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disconnect conn7;
+
+connection conn0;
+#assume 4
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+connect (conn1,$ip,$user,$pwd,,$port); 
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+connect (conn2,$ip,$user,$pwd,,$port); 
+use test;
+set @a=5;
+SELECT data from user where id = @a;
+disconnect conn1;
+disconnect conn2;
+
+real_sleep 1;
+temp_disable_ps_protocol;
+connection conn0;
+#assume 4
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disconnect conn8;
+disconnect conn9;
+disconnect conn10;
+disconnect conn11;
+
+connection conn0;
+#assume 5
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disconnect conn0;
