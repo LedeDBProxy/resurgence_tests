@@ -86,6 +86,7 @@ set @a=3;
 SELECT data from user where id = @a;
 disconnect conn3;
 
+real_sleep 0.5;
 temp_disable_ps_protocol;
 connection conn0;
 #assume 2
