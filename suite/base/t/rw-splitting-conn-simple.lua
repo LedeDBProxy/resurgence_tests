@@ -174,7 +174,6 @@ function connect_server()
             print("  [".. i .."].state = " .. s.state)
         end
 
-
         -- prefer connections to the master 
         if s.type == proxy.BACKEND_TYPE_RW and
             s.state ~= proxy.BACKEND_STATE_DOWN and
@@ -517,8 +516,9 @@ function read_query( packet )
                 end
             end
 
-            if stmt.token_name == "TK_SQL_SHOW" or stmt.token_name == "TK_SQL_DESC"
-                or stmt.token_name == "TK_SQL_EXPLAIN" then
+            if stmt.token_name == "TK_SQL_USE" or stmt.token_name == "TK_SQL_SET"
+                or stmt.token_name == "TK_SQL_SHOW"
+                or stmt.token_name == "TK_SQL_DESC" or stmt.token_name == "TK_SQL_EXPLAIN" then
                 rw_op = false
                 local ro_backend_ndx = lb.idle_ro()
                 if ro_backend_ndx > 0 then

@@ -82,6 +82,8 @@ local MYSQL_USER	 	= os.getenv("MYSQL_USER")	 	or "test"
 local MYSQL_PASSWORD 	= os.getenv("MYSQL_PASSWORD") 	or "test"
 local MYSQL_HOST	 	= os.getenv("MYSQL_HOST")	 	or "127.0.0.1"
 local MYSQL_PORT	 	= os.getenv("MYSQL_PORT")	 	or "3306"
+local MYSQL_RO_HOST	 	= os.getenv("MYSQL_RO_HOST")	or "127.0.0.1"
+local MYSQL_RO_PORT	 	= os.getenv("MYSQL_RO_PORT")	or "3306"
 local MYSQL_TEST_BIN 	= os.getenv("MYSQL_TEST_BIN") 	or "mysqltest"
 local MYSQL_CLIENT_BIN 	= os.getenv("MYSQL_CLIENT_BIN") or "mysql"
 local TESTS_REGEX 	= os.getenv("TESTS_REGEX")
@@ -745,6 +747,7 @@ end
 function start_ps_proxy (second_lua_script)
 	second_proxy_options = {
 			["proxy-backend-addresses"] = MYSQL_HOST .. ":" .. MYSQL_PORT,
+			["proxy-read-only-backend-addresses"] = MYSQL_RO_HOST .. ":" .. MYSQL_RO_PORT,
 			["proxy-address"]		   	= PROXY_HOST .. ":" .. PROXY_PORT,
 			["pid-file"]				= PROXY_PIDFILE,
 			["proxy-lua-script"]		= second_lua_script or DEFAULT_SCRIPT_FILENAME,

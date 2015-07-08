@@ -2,36 +2,30 @@ select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 1
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
 wb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
 wb
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 5
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
@@ -41,8 +35,7 @@ select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 4
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
@@ -52,13 +45,11 @@ select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 4
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
@@ -67,118 +58,96 @@ select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 5
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
-data
-lazio
-use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
+use test;
+SELECT data from user where id = 3;
+data
+wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 9
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
+data
+wbb
+use test;
+SELECT data from user where id = 2;
+data
+jyywb
+use test;
+SELECT data from user where id = 4;
+data
+wbb
+use test;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=2;
-SELECT data from user where id = @a;
-data
-jyywb
-use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
-data
-lazio
-use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
-jyywb
-use test;
-set @a=2;
-SELECT data from user where id = @a;
-data
-jyywb
-use test;
-set @a=2;
-SELECT data from user where id = @a;
-data
-jyywb
+wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 9
