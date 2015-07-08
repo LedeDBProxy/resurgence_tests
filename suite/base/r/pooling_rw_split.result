@@ -1,0 +1,58 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=4;
+SELECT data from user where id = @a;
+data
+lazio
+use test;
+SELECT data from user where id = 6;
+data
+wb
+use test;
+SELECT data from user where id = 5;
+data
+use test;
+SELECT data from user where id = 4;
+data
+lazio
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 4;
+data
+lazio
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 2;
+data
+jyywb
+use test;
+SELECT data from user where id = 1;
+data
+Hello world
+use test;
+SELECT data from user where id = 1;
+data
+Hello world
+use test;
+SELECT data from user where id = 1;
+data
+Hello world
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+9
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+4

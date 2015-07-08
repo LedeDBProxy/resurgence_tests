@@ -30,7 +30,6 @@ temp_disable_ps_protocol;
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-SELECT * FROM backends;
 
 enable_ps_protocol;
 connect (conn1,$ip,$user,$pwd,,$port); 

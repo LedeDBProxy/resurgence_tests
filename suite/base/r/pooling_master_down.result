@@ -1,10 +1,6 @@
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 1
-SELECT * FROM backends;
-backend_ndx	address	state	type	uuid	connected_clients
-1	10.110.12.190:3306	up	rw	NULL	0
-2	10.110.12.193:3306	unknown	ro	NULL	0
 use test;
 set @a=3;
 SELECT data from user where id = @a;
