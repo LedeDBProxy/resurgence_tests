@@ -1,0 +1,108 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+use test;
+set autocommit=0;
+update user set data="wbjyywb" where id = 2;
+set autocommit=1;
+SELECT data from user where id = 2;
+data
+wbjyywb
+use test;
+set autocommit=0;
+SELECT data from user where id = 2;
+data
+wbjyywb
+update user set data="wbjyy" where id = 2;
+set autocommit=1;
+SELECT data from user where id = 2;
+data
+wbjyy
+use test;
+SELECT data from user where id = 2;
+data
+wbjyy
+set autocommit=0;
+update user set data="wbjyywb" where id = 2;
+SELECT data from user where id = 2;
+data
+wbjyywb
+set autocommit=1;
+use test;
+SELECT data from user where id = 2;
+data
+wbjyywb
+set autocommit=0;
+update user set data="hello,wbjyy" where id = 2;
+set autocommit=1;
+SELECT data from user where id = 2;
+data
+hello,wbjyy
+use test;
+SELECT data from user where id = 2;
+data
+hello,wbjyy
+set autocommit=0;
+update user set data="hello,wbjyy2" where id = 2;
+set autocommit=1;
+SELECT data from user where id = 2;
+data
+hello,wbjyy2
+use test;
+SELECT data from user where id = 2;
+data
+hello,wbjyy2
+set autocommit=0;
+update user set data="hello,wbjyy3" where id = 2;
+set autocommit=1;
+SELECT data from user where id = 2;
+data
+hello,wbjyy3
+use test;
+SELECT data from user where id = 2;
+data
+hello,wbjyy3
+set autocommit=0;
+update user set data="hello,wbjyy4" where id = 2;
+set autocommit=1;
+SELECT data from user where id = 2;
+data
+hello,wbjyy4
+use test;
+SELECT data from user where id = 2;
+data
+hello,wbjyy4
+set autocommit=0;
+update user set data="hello,wbjyy5" where id = 2;
+set autocommit=1;
+SELECT data from user where id = 2;
+data
+hello,wbjyy5
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+SELECT data from user where id = 2;
+data
+jyywb
+update user set data="error,wbjyy" where id = 2;
+SELECT data from user where id = 2;
+data
+error,wbjyy
+update user set data="error,wbjyy" where id = 2;
+update user set data="jyywb" where id = 2;
+SELECT data from user where id = 2;
+data
+jyywb
+use test;
+SELECT data from user where id = 2;
+data
+jyywb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+3
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+2
