@@ -144,7 +144,7 @@ update test set data="wbjyywb" where id = 5;
 
 real_sleep 0.5;
 connection conn0;
-#assume 8
+#assume 11
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 

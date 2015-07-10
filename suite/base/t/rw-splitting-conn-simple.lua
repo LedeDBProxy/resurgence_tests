@@ -185,6 +185,7 @@ function connect_server()
             s.state ~= proxy.BACKEND_STATE_DOWN and
             ((cur_idle < min_idle_conns and connected_clients < max_idle_conns)
             or cur_idle > 0) then
+            is_backend_conn_keepalive = true
             proxy.connection.backend_ndx = i
             break
         elseif s.type == proxy.BACKEND_TYPE_RW and
@@ -499,6 +500,13 @@ function read_query( packet )
                                             if is_debug then
                                                 print("  [set is_auto_commit false]" )
                                             end
+                                            if ro_server == true then
+                                                local rw_backend_ndx = lb.idle_failsafe_rw()
+                                                if rw_backend_ndx > 0 then
+                                                    backend_ndx = rw_backend_ndx
+                                                    proxy.connection.backend_ndx = backend_ndx
+                                                end
+                                            end
                                         else
                                             is_auto_commit = true
                                         end
@@ -527,6 +535,12 @@ function read_query( packet )
 
                     if is_debug then
                         print("  [use ro server: " .. backend_ndx .. "]")
+                    end
+                end
+                if stmt.token_name == "TK_SQL_USE" then
+                    local token_len = #tokens
+                    if token_len  > 1 then
+                        c.default_db = tokens[2].text
                     end
                 end
             end
@@ -694,6 +708,12 @@ function read_query( packet )
         proxy.queries:append(4, packet, { resultset_is_needed = true } )
     else
         proxy.queries:append(1, packet, { resultset_is_needed = true })
+        if cmd.type == proxy.COM_STMT_CLOSE and is_in_transaction then
+            proxy.connection.is_still_in_trans = true
+            if is_debug then
+                print("   set is_still_in_trans true")
+            end
+        end
     end
 
     -- attension: change stmt id after append the query
