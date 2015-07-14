@@ -145,7 +145,7 @@ PROXY_CHAIN_PIDFILE   	= lfs.currentdir() .. "/mysql-proxy-test-chain.pid"
 PROXY_BACKEND_PIDFILE 	= lfs.currentdir() .. "/mysql-proxy-test-backend.pid"
 PROXY_TEST_BASEDIR		= lfs.currentdir()
 
-DEFAULT_SCRIPT_FILENAME	 = "/tmp/dummy.lua"
+DEFAULT_SCRIPT_FILENAME	 = "dummy.lua"
 default_proxy_options = {
 	["proxy-backend-addresses"] = MYSQL_HOST .. ":" .. MYSQL_PORT,
 	["proxy-address"]		   	= PROXY_HOST .. ":" .. PROXY_PORT,
@@ -758,6 +758,7 @@ function start_ps_proxy (second_lua_script)
 			["admin-lua-script"]   	    = PROXY_LUAPATH,
 			["basedir"]					= PROXY_TEST_BASEDIR,
 			["log-level"]			= (VERBOSE == 3) and "debug" or "critical",
+			["log-file"]			= PROXY_LOG_FILE or "proxy.log",
 	}
 	start_proxy('second_proxy',second_proxy_options) 
 end
