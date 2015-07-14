@@ -1,0 +1,72 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#enable_connect_log;
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+#assume 1
+select * from backends;
+
+insert into backends values ('1.1.1.1:1111', 'rw', 'unkown');
+insert into backends values ('1.1.1.1', 'ro', 'maintaining');
+update backends set type = 'rw' where address = '1.1.1.1:3306';
+update backends set type = 'ro' where address = '1.1.1.1:1111';
+select * from backends;
+update backends set state = 'maintaining' where address = '1.1.1.1:1111';
+update backends set state = 'unkown' where address = '1.1.1.1:3306';
+select * from backends;
+update backends set state = 'unkown' where backend_ndx = 3;
+update backends set state = 'maintaining' where backend_ndx = 2;
+select * from backends;
+update backends set state = 'unkown', type = 'rw' where address = '1.1.1.1:1111';
+update backends set state = 'maintaining', type = 'ro' where address = '1.1.1.1:3306';
+select * from backends;
+update backends set type = 'ro';
+update backends set state = 'maintaining';
+select * from backends;
+
+--error 1105
+connect (conn1,$ip,$user,$pwd,,$port); 
+
+
+connection conn0;
+update backends set state = 'unkown';
+
+connect (conn2,$ip,$user,$pwd,,$port); 
+use test;
+select 1 from dual;
+
+connection conn0;
+select * from backends;
+
+delete from backends where backend_ndx = 2;
+delete from backends where address = '1.1.1.1:3306';
+
+select * from backends;
+
+disconnect conn0;
+disconnect conn2;

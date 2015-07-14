@@ -1,0 +1,65 @@
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	0
+2	127.0.0.1:3306	unknown	ro	NULL	0
+insert into backends values ('1.1.1.1:1111', 'rw', 'unkown');
+insert into backends values ('1.1.1.1', 'ro', 'maintaining');
+update backends set type = 'rw' where address = '1.1.1.1:3306';
+update backends set type = 'ro' where address = '1.1.1.1:1111';
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	0
+2	127.0.0.1:3306	unknown	ro	NULL	0
+3	1.1.1.1:1111	unknown	ro	NULL	0
+4	1.1.1.1:3306	maintaining	rw	NULL	0
+update backends set state = 'maintaining' where address = '1.1.1.1:1111';
+update backends set state = 'unkown' where address = '1.1.1.1:3306';
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	0
+2	127.0.0.1:3306	unknown	ro	NULL	0
+3	1.1.1.1:1111	maintaining	ro	NULL	0
+4	1.1.1.1:3306	unknown	rw	NULL	0
+update backends set state = 'unkown' where backend_ndx = 3;
+update backends set state = 'maintaining' where backend_ndx = 2;
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	0
+2	127.0.0.1:3306	maintaining	ro	NULL	0
+3	1.1.1.1:1111	unknown	ro	NULL	0
+4	1.1.1.1:3306	unknown	rw	NULL	0
+update backends set state = 'unkown', type = 'rw' where address = '1.1.1.1:1111';
+update backends set state = 'maintaining', type = 'ro' where address = '1.1.1.1:3306';
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	0
+2	127.0.0.1:3306	maintaining	ro	NULL	0
+3	1.1.1.1:1111	unknown	rw	NULL	0
+4	1.1.1.1:3306	maintaining	ro	NULL	0
+update backends set type = 'ro';
+update backends set state = 'maintaining';
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	maintaining	ro	NULL	0
+2	127.0.0.1:3306	maintaining	ro	NULL	0
+3	1.1.1.1:1111	maintaining	ro	NULL	0
+4	1.1.1.1:3306	maintaining	ro	NULL	0
+connect(10.110.12.190,root,123456,,40000,);
+ERROR HY000: (proxy) all backends are down
+update backends set state = 'unkown';
+use test;
+select 1 from dual;
+1
+1
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	ro	NULL	1
+2	127.0.0.1:3306	unknown	ro	NULL	0
+3	1.1.1.1:1111	unknown	ro	NULL	0
+4	1.1.1.1:3306	unknown	ro	NULL	0
+delete from backends where backend_ndx = 2;
+delete from backends where address = '1.1.1.1:3306';
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	ro	NULL	1
+2	1.1.1.1:1111	unknown	ro	NULL	0
