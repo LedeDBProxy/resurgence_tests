@@ -108,7 +108,7 @@ function get_port_base()
 end
 local port_base = get_port_base()
 
-PROXY_HOST	   = os.getenv("PROXY_HOST")		or "10.110.12.191"
+PROXY_HOST	   = os.getenv("PROXY_HOST")		or "127.0.0.1"
 PROXY_PORT	   = os.getenv("PROXY_PORT")		or tostring(port_base + 0)
 PROXY_MASTER_PORT  = os.getenv("PROXY_MASTER_PORT")	or tostring(port_base + 10)
 PROXY_SLAVE_PORT   = os.getenv("PROXY_SLAVE_PORT")	or tostring(port_base + 20)
@@ -757,7 +757,7 @@ function start_ps_proxy (second_lua_script)
 			["admin-password"]			= "password",
 			["admin-lua-script"]   	    = PROXY_LUAPATH,
 			["basedir"]					= PROXY_TEST_BASEDIR,
-			["log-level"]			= (VERBOSE == 3) and "debug" or "critical",
+			["log-level"]			= (VERBOSE == 3) and "debug" or "debug",
 			["log-file"]			= PROXY_LOG_FILE or "proxy.log",
 	}
 	start_proxy('second_proxy',second_proxy_options) 

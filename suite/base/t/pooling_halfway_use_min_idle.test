@@ -146,6 +146,7 @@ SELECT data from user where id = 2;
 
 disable_ps_protocol;
 
+real_sleep 1;
 connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval select conn_num from backends where backend_ndx = 2 and user = "$user";

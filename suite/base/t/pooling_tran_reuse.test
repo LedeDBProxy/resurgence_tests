@@ -1,0 +1,250 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#enable_connect_log;
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+let $default_db= $DEFAULT_DB;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+#assume 1
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disable_ps_protocol;
+
+connect (conn1,$ip,$user,$pwd,$default_db,$port); 
+set autocommit=0;
+update user set data="wbjyywb" where id = 2;
+SELECT data from user where id = 2;
+
+connect (conn2,$ip,$user,$pwd,$default_db,$port); 
+set autocommit=0;
+SELECT data from user where id = 2;
+update user set data="wbjyy" where id = 200;
+SELECT data from user where id = 200;
+
+connect (conn3,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="wbjyywb" where id = 201;
+SELECT data from user where id = 201;
+
+connect (conn4,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy" where id = 202;
+SELECT data from user where id = 202;
+
+connect (conn5,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy2" where id = 203;
+SELECT data from user where id = 203;
+
+connect (conn6,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy3" where id = 204;
+SELECT data from user where id = 204;
+
+connect (conn7,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy4" where id = 205;
+SELECT data from user where id = 205;
+
+connect (conn8,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy5" where id = 206;
+SELECT data from user where id = 206;
+
+real_sleep 1;
+
+temp_disable_ps_protocol;
+
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connection conn1;
+commit;
+set autocommit=1;
+
+connection conn2;
+commit;
+set autocommit=1;
+
+connection conn3;
+commit;
+set autocommit=1;
+
+connection conn4;
+commit;
+set autocommit=1;
+
+connection conn5;
+commit;
+set autocommit=1;
+
+connection conn6;
+rollback;
+set autocommit=1;
+
+connection conn7;
+rollback;
+set autocommit=1;
+
+connection conn8;
+commit;
+set autocommit=1;
+
+real_sleep 1;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+
+connect (conn13,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+update user set data="error,wbjyy" where id = 2;
+disconnect conn13;
+
+connect (conn14,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+update user set data="error,wbjyy" where id = 2;
+disconnect conn14;
+
+connect (conn11,$ip,$user,$pwd,$default_db,$port); 
+update user set data="jyywb" where id = 2;
+SELECT data from user where id = 2;
+
+connect (conn12,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+
+disable_ps_protocol;
+
+real_sleep 1;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+
+real_sleep 1;
+connect (conn21,$ip,$user,$pwd,$default_db,$port); 
+set autocommit=0;
+update user set data="wbjyywb" where id = 199;
+SELECT data from user where id = 3;
+
+connect (conn22,$ip,$user,$pwd,$default_db,$port); 
+set autocommit=0;
+SELECT data from user where id = 2;
+update user set data="wbjyy" where id = 200;
+SELECT data from user where id = 200;
+
+connect (conn23,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="wbjyywb" where id = 201;
+SELECT data from user where id = 201;
+
+connect (conn24,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy" where id = 202;
+SELECT data from user where id = 202;
+
+connect (conn25,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy2" where id = 203;
+SELECT data from user where id = 203;
+
+connect (conn26,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy3" where id = 204;
+SELECT data from user where id = 204;
+
+connect (conn27,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy4" where id = 205;
+SELECT data from user where id = 205;
+
+connect (conn28,$ip,$user,$pwd,$default_db,$port); 
+SELECT data from user where id = 2;
+set autocommit=0;
+update user set data="hello,wbjyy5" where id = 206;
+SELECT data from user where id = 206;
+
+temp_disable_ps_protocol;
+
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connection conn21;
+commit;
+set autocommit=1;
+
+connection conn22;
+commit;
+set autocommit=1;
+
+connection conn23;
+commit;
+set autocommit=1;
+
+connection conn24;
+commit;
+set autocommit=1;
+
+connection conn25;
+commit;
+set autocommit=1;
+
+connection conn26;
+rollback;
+set autocommit=1;
+
+connection conn27;
+rollback;
+set autocommit=1;
+
+connection conn28;
+commit;
+set autocommit=1;
+
+real_sleep 1;
+temp_disable_ps_protocol;
+
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disable_ps_protocol;
+real_sleep 1;
+
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disconnect conn0;

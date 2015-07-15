@@ -507,6 +507,7 @@ function read_query( packet )
                                                     proxy.connection.backend_ndx = backend_ndx
                                                 end
                                             end
+                                            conn_reserved = true
                                         else
                                             is_auto_commit = true
                                         end
@@ -593,6 +594,8 @@ function read_query( packet )
                         end
                     end
                 end
+            elseif cmd.type == proxy.COM_STMT_PREPARE then
+                is_prepared = true
             end
 
             conn_reserved = true
@@ -697,11 +700,6 @@ function read_query( packet )
         return proxy.PROXY_SEND_QUERY
     end
 
-    c.is_server_conn_reserved = conn_reserved
-
-    if is_debug then
-        print("    cmd type:" .. cmd.type)
-    end
     if cmd.type == proxy.COM_STMT_EXECUTE then
         proxy.queries:append(3, packet, { resultset_is_needed = true } )
     elseif cmd.type == proxy.COM_STMT_PREPARE then
@@ -731,6 +729,17 @@ function read_query( packet )
             proxy.connection.change_server_by_rw = backend_ndx
         end
     end
+
+    if is_debug then
+        print("    cmd type:" .. cmd.type)
+        if conn_reserved then
+            print("    connection reserved")
+        else
+            print("    connection not reserved")
+        end
+    end
+
+    c.is_server_conn_reserved = conn_reserved
 
     if is_debug then
         backend_ndx = proxy.connection.backend_ndx
@@ -972,10 +981,20 @@ function read_query_result( inj )
             end
         elseif inj.id ~= 4 then
             is_in_transaction = flags.in_trans
-            if not is_in_transaction and not is_auto_commit then
-                is_in_transaction = true
-                if is_debug then
-                    print("   set is_in_transaction true")
+            if not is_in_transaction then
+                if not is_auto_commit then
+                    is_in_transaction = true
+                    if is_debug then
+                        print("   set is_in_transaction true")
+                    end
+                else
+                    if not is_prepared then
+                        proxy.connection.client.is_server_conn_reserved = false
+                    else
+                        if is_debug then
+                            print("prepare stmt cnt:", proxy.connection.valid_prepare_stmt_cnt)
+                        end
+                    end
                 end
             end
         end
@@ -992,6 +1011,14 @@ function read_query_result( inj )
                 print("    change stmt id")
             end
             res.prepared_stmt_id = server_index
+        end
+    end
+
+    if is_debug then
+        if is_in_transaction == true then
+            print(" is_in_transaction still true")
+        else
+            print(" is_in_transaction false")
         end
     end
 end
@@ -1023,6 +1050,9 @@ function disconnect_client()
         -- make sure we are disconnection from the connection
         -- to move the connection into the pool
         proxy.connection.backend_ndx = 0
+        if is_debug then
+            print("  set backend_ndx zero")
+        end
     end
 
 end

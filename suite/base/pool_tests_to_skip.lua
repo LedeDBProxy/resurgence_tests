@@ -60,6 +60,7 @@ tests_to_skip = {
 	['xtab2'] = 'only test for ps here',
 	['tokens1'] = 'only test for ps here',
 	['tokens2'] = 'only test for ps here.',
+	['admin_backends_op'] = 'only test for ps here',
 }
 
 local build_os = os.getenv("BUILD_OS")
