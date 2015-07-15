@@ -1,0 +1,176 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+set autocommit=0;
+update user set data="wbjyywb" where id = 2;
+SELECT data from user where id = 2;
+data
+wbjyywb
+set autocommit=0;
+SELECT data from user where id = 2;
+data
+jyywb
+update user set data="wbjyy" where id = 200;
+SELECT data from user where id = 200;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="wbjyywb" where id = 201;
+SELECT data from user where id = 201;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy" where id = 202;
+SELECT data from user where id = 202;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy2" where id = 203;
+SELECT data from user where id = 203;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy3" where id = 204;
+SELECT data from user where id = 204;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy4" where id = 205;
+SELECT data from user where id = 205;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy5" where id = 206;
+SELECT data from user where id = 206;
+data
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+commit;
+set autocommit=1;
+commit;
+set autocommit=1;
+commit;
+set autocommit=1;
+commit;
+set autocommit=1;
+commit;
+set autocommit=1;
+rollback;
+set autocommit=1;
+rollback;
+set autocommit=1;
+commit;
+set autocommit=1;
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+9
+SELECT data from user where id = 2;
+data
+wbjyywb
+update user set data="error,wbjyy" where id = 2;
+SELECT data from user where id = 2;
+data
+error,wbjyy
+update user set data="error,wbjyy" where id = 2;
+update user set data="jyywb" where id = 2;
+SELECT data from user where id = 2;
+data
+jyywb
+SELECT data from user where id = 2;
+data
+jyywb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+9
+set autocommit=0;
+update user set data="wbjyywb" where id = 199;
+SELECT data from user where id = 3;
+data
+wb
+set autocommit=0;
+SELECT data from user where id = 2;
+data
+jyywb
+update user set data="wbjyy" where id = 200;
+SELECT data from user where id = 200;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="wbjyywb" where id = 201;
+SELECT data from user where id = 201;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy" where id = 202;
+SELECT data from user where id = 202;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy2" where id = 203;
+SELECT data from user where id = 203;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy3" where id = 204;
+SELECT data from user where id = 204;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy4" where id = 205;
+SELECT data from user where id = 205;
+data
+SELECT data from user where id = 2;
+data
+jyywb
+set autocommit=0;
+update user set data="hello,wbjyy5" where id = 206;
+SELECT data from user where id = 206;
+data
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+commit;
+set autocommit=1;
+commit;
+set autocommit=1;
+commit;
+set autocommit=1;
+commit;
+set autocommit=1;
+commit;
+set autocommit=1;
+rollback;
+set autocommit=1;
+rollback;
+set autocommit=1;
+commit;
+set autocommit=1;
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+9
