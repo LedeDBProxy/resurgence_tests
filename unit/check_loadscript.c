@@ -125,7 +125,10 @@ START_TEST(test_luaL_loadfile_factory_errors) {
 
 int main(int argc, char **argv) {
 #ifdef HAVE_GTHREAD	
-	g_thread_init(NULL);
+#if !GLIB_CHECK_VERSION(2, 32, 0)
+	/*GLIB below 2.32 must call thread_init*/
+	g_thread_init(NULL);	
+#endif
 #endif
 
 	g_test_init(&argc, &argv, NULL);

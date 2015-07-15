@@ -113,7 +113,11 @@ void test_path_string_is_parent_of(void) {
 /*@}*/
 
 int main(int argc, char **argv) {
-	g_thread_init(NULL);
+
+#if !GLIB_CHECK_VERSION(2, 32, 0)
+	/*GLIB below 2.32 must call thread_init*/
+	g_thread_init(NULL);	
+#endif
 
 	g_test_init(&argc, &argv, NULL);
 	g_test_bug_base("http://bugs.mysql.com/");
