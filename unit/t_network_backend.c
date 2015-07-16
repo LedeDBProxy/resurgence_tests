@@ -58,22 +58,22 @@ void t_network_backends_add() {
 	g_assert_cmpint(network_backends_count(backends), ==, 0);
 
 	/* insert should work */
-	g_assert_cmpint(network_backends_add(backends, "127.0.0.1", BACKEND_TYPE_RW), ==, 0);
+	g_assert_cmpint(network_backends_add(backends, "127.0.0.1", BACKEND_TYPE_RW, BACKEND_STATE_UNKNOWN), ==, 0);
 	
 	g_assert_cmpint(network_backends_count(backends), ==, 1);
 
 	/* is duplicate, should fail */
-	g_assert_cmpint(network_backends_add(backends, "127.0.0.1", BACKEND_TYPE_RW), !=, 0);
+	g_assert_cmpint(network_backends_add(backends, "127.0.0.1", BACKEND_TYPE_RW, BACKEND_STATE_UNKNOWN), !=, 0);
 	
 	g_assert_cmpint(network_backends_count(backends), ==, 1);
 
 	/* unfolds to the same default */
-	g_assert_cmpint(network_backends_add(backends, "127.0.0.1:3306", BACKEND_TYPE_RW), !=, 0);
+	g_assert_cmpint(network_backends_add(backends, "127.0.0.1:3306", BACKEND_TYPE_RW, BACKEND_STATE_UNKNOWN), !=, 0);
 	
 	g_assert_cmpint(network_backends_count(backends), ==, 1);
 
 	/* make sure bad port numbers also fail */
-	g_assert_cmpint(network_backends_add(backends, "127.0.0.1:113306", BACKEND_TYPE_RW), ==, -1);
+	g_assert_cmpint(network_backends_add(backends, "127.0.0.1:113306", BACKEND_TYPE_RW, BACKEND_STATE_UNKNOWN), ==, -1);
 	
 	network_backends_free(backends);
 }
@@ -90,7 +90,7 @@ void t_network_backends_check() {
 	backends = network_backends_new();
 	g_assert(backends);
 	
-	g_assert_cmpint(network_backends_add(backends, "127.0.0.1", BACKEND_TYPE_RW), ==, 0);
+	g_assert_cmpint(network_backends_add(backends, "127.0.0.1", BACKEND_TYPE_RW, BACKEND_STATE_UNKNOWN), ==, 0);
 
 	/* setup the test 
 	 *
@@ -134,7 +134,6 @@ int main(int argc, char **argv) {
 	/*GLIB below 2.32 must call thread_init*/
 	g_thread_init(NULL);	
 #endif
-
 	g_test_init(&argc, &argv, NULL);
 	g_test_bug_base("http://bugs.mysql.com/");
 
