@@ -75,6 +75,8 @@ SET NAMES latin1;
 SELECT data from user where id = 14;
 data
 SET NAMES big5;
+SET character_set_results = NULL;
+SET sql_mode='STRICT_TRANS_TABLES';
 SELECT data from user where id = 15;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
@@ -92,6 +94,25 @@ show variables where Variable_name regexp 'character_set_[cr]';
 Variable_name	Value
 character_set_client	utf8
 character_set_connection	utf8
+character_set_results	
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 15;
+data
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	big5
+character_set_connection	big5
+character_set_results	
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+update user set data="wbjyywb" where id = 5;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	big5
+character_set_connection	big5
 character_set_results	
 show variables where Variable_name like '%sql_mode%';
 Variable_name	Value
@@ -244,16 +265,6 @@ Variable_name	Value
 character_set_client	latin1
 character_set_connection	latin1
 character_set_results	latin1
-show variables where Variable_name like '%sql_mode%';
-Variable_name	Value
-sql_mode	
-SELECT data from user where id = 15;
-data
-show variables where Variable_name regexp 'character_set_[cr]';
-Variable_name	Value
-character_set_client	big5
-character_set_connection	big5
-character_set_results	big5
 show variables where Variable_name like '%sql_mode%';
 Variable_name	Value
 sql_mode	

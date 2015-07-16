@@ -117,6 +117,9 @@ SELECT data from user where id = 14;
 
 connect (conn15,$ip,$user,$pwd,$default_db,$port); 
 SET NAMES big5;
+SET character_set_results = NULL;
+SET sql_mode='STRICT_TRANS_TABLES';
+
 SELECT data from user where id = 15;
 
 disable_ps_protocol;
@@ -131,6 +134,14 @@ connection conn1;
 SELECT data from user where id = 1;
 rollback;
 set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn15;
+SELECT data from user where id = 15;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+update user set data="wbjyywb" where id = 5;
 show variables where Variable_name regexp 'character_set_[cr]';
 show variables where Variable_name like '%sql_mode%';
 
@@ -212,11 +223,6 @@ show variables where Variable_name like '%sql_mode%';
 
 connection conn14;
 SELECT data from user where id = 14;
-show variables where Variable_name regexp 'character_set_[cr]';
-show variables where Variable_name like '%sql_mode%';
-
-connection conn15;
-SELECT data from user where id = 15;
 show variables where Variable_name regexp 'character_set_[cr]';
 show variables where Variable_name like '%sql_mode%';
 
