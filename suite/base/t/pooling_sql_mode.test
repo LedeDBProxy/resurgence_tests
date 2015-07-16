@@ -1,0 +1,188 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#enable_connect_log;
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+let $default_db= $DEFAULT_DB;
+
+disable_ps_protocol;
+connect (conn1,$ip,$user,$pwd,$default_db,$port); 
+SET NAMES utf8;
+SET character_set_results = NULL;
+SELECT data from user where id = 1;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn2,$ip,$user,$pwd,$default_db,$port); 
+SET NAMES latin1;
+SET character_set_results = NULL;
+SET sql_mode='STRICT_TRANS_TABLES';
+SELECT data from user where id = 2;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn3,$ip,$user,$pwd,$default_db,$port); 
+SET NAMES utf8;
+SELECT data from user where id = 3;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn4,$ip,$user,$pwd,$default_db,$port); 
+SET NAMES latin1;
+SET sql_mode='STRICT_TRANS_TABLES';
+SELECT data from user where id = 4;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn5,$ip,$user,$pwd,$default_db,$port); 
+SET NAMES utf8;
+SELECT data from user where id = 5;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn6,$ip,$user,$pwd,$default_db,$port); 
+SET NAMES latin1;
+SET sql_mode='STRICT_TRANS_TABLES';
+SELECT data from user where id = 6;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn7,$ip,$user,$pwd,$default_db,$port); 
+character_set utf8;
+SELECT data from user where id = 7;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn8,$ip,$user,$pwd,$default_db,$port); 
+SET NAMES latin1;
+SET sql_mode='STRICT_TRANS_TABLES';
+SET character_set_results = NULL;
+SELECT data from user where id = 8;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn9,$ip,$user,$pwd,$default_db,$port); 
+character_set utf8;
+SET character_set_results = NULL;
+SELECT data from user where id = 9;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+real_sleep 0.5;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connect (conn10,$ip,$user,$pwd,$default_db,$port); 
+character_set big5;
+SET character_set_results = NULL;
+SET sql_mode='STRICT_TRANS_TABLES';
+SELECT data from user where id = 10;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn11,$ip,$user,$pwd,$default_db,$port); 
+character_set big5;
+SET character_set_results = NULL;
+SELECT data from user where id = 11;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+connect (conn12,$ip,$user,$pwd,$default_db,$port); 
+character_set big5;
+SET character_set_results = NULL;
+SET sql_mode='STRICT_TRANS_TABLES';
+SELECT data from user where id = 12;
+show variables where Variable_name regexp 'character_set_[cr]';
+
+real_sleep 0.5;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connection conn5;
+SELECT data from user where id = 5;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn6;
+SELECT data from user where id = 6;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn1;
+SELECT data from user where id = 1;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn2;
+SELECT data from user where id = 2;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn3;
+SELECT data from user where id = 3;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn4;
+SELECT data from user where id = 4;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn5;
+SELECT data from user where id = 5;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn6;
+SELECT data from user where id = 6;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn7;
+SELECT data from user where id = 7;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn8;
+SELECT data from user where id = 8;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn9;
+SELECT data from user where id = 9;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+real_sleep 0.5;
+
+connection conn10;
+SELECT data from user where id = 10;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn11;
+SELECT data from user where id = 11;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+connection conn12;
+SELECT data from user where id = 12;
+show variables where Variable_name regexp 'character_set_[cr]';
+show variables where Variable_name like '%sql_mode%';
+
+real_sleep 0.5;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+

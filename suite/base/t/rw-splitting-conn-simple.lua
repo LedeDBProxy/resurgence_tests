@@ -709,7 +709,7 @@ function read_query( packet )
         if cmd.type == proxy.COM_STMT_CLOSE and is_in_transaction then
             proxy.connection.is_still_in_trans = true
             if is_debug then
-                print("   set is_still_in_trans true")
+                print("    set is_still_in_trans true")
             end
         end
     end
@@ -985,14 +985,14 @@ function read_query_result( inj )
                 if not is_auto_commit then
                     is_in_transaction = true
                     if is_debug then
-                        print("   set is_in_transaction true")
+                        print("    set is_in_transaction true")
                     end
                 else
                     if not is_prepared then
                         proxy.connection.client.is_server_conn_reserved = false
                     else
                         if is_debug then
-                            print("prepare stmt cnt:", proxy.connection.valid_prepare_stmt_cnt)
+                            print("    prepare stmt cnt:", proxy.connection.valid_prepare_stmt_cnt)
                         end
                     end
                 end
@@ -1016,9 +1016,9 @@ function read_query_result( inj )
 
     if is_debug then
         if is_in_transaction == true then
-            print(" is_in_transaction still true")
+            print("    is_in_transaction still true")
         else
-            print(" is_in_transaction false")
+            print("    is_in_transaction false")
         end
     end
 end
@@ -1042,7 +1042,7 @@ function disconnect_client()
         if is_debug then
             print("  set connection_close true ")
             if is_in_transaction then
-                print(" is_in_transaction is still true") 
+                print("    is_in_transaction is still true") 
             end
         end
         proxy.connection.connection_close = true
