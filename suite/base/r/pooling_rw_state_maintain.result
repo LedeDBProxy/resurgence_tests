@@ -1,0 +1,265 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+SET NAMES utf8;
+SET character_set_results = NULL;
+SET sql_mode='STRICT_TRANS_TABLES';
+set autocommit=0;
+SELECT data from user where id = 1;
+data
+Hello world
+SET NAMES big5;
+SET character_set_results = NULL;
+SET sql_mode='STRICT_TRANS_TABLES';
+set autocommit=0;
+SELECT data from user where id = 2;
+data
+jyywb
+SET NAMES latin1;
+SET character_set_results = NULL;
+SET sql_mode='STRICT_TRANS_TABLES';
+set autocommit=0;
+SELECT data from user where id = 3;
+data
+wb
+SET NAMES latin1;
+SET sql_mode='STRICT_TRANS_TABLES';
+set autocommit=0;
+SELECT data from user where id = 4;
+data
+lazio
+SET NAMES utf8;
+SET sql_mode='STRICT_TRANS_TABLES';
+set autocommit=0;
+SELECT data from user where id = 5;
+data
+SET NAMES big5;
+SET sql_mode='STRICT_TRANS_TABLES';
+set autocommit=0;
+SELECT data from user where id = 6;
+data
+wb
+SET sql_mode='STRICT_TRANS_TABLES';
+set autocommit=0;
+SELECT data from user where id = 7;
+data
+jyy
+SET sql_mode='STRICT_TRANS_TABLES';
+set autocommit=0;
+SELECT data from user where id = 8;
+data
+lazio
+SET NAMES big5;
+SELECT data from user where id = 9;
+data
+SET NAMES utf8;
+SELECT data from user where id = 10;
+data
+dog
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+2
+SET NAMES latin1;
+SELECT data from user where id = 11;
+data
+SET NAMES utf8;
+SELECT data from user where id = 12;
+data
+SET NAMES utf8;
+SELECT data from user where id = 13;
+data
+SET NAMES latin1;
+SELECT data from user where id = 14;
+data
+SET NAMES big5;
+SELECT data from user where id = 15;
+data
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+7
+SELECT data from user where id = 1;
+data
+Hello world
+rollback;
+set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	utf8
+character_set_connection	utf8
+character_set_results	
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 2;
+data
+jyywb
+rollback;
+set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	big5
+character_set_connection	big5
+character_set_results	
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 3;
+data
+wb
+rollback;
+set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	latin1
+character_set_connection	latin1
+character_set_results	
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 4;
+data
+lazio
+rollback;
+set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	latin1
+character_set_connection	latin1
+character_set_results	latin1
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 5;
+data
+rollback;
+set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	utf8
+character_set_connection	utf8
+character_set_results	utf8
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 6;
+data
+wb
+rollback;
+set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	big5
+character_set_connection	big5
+character_set_results	big5
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 7;
+data
+jyy
+rollback;
+set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	latin1
+character_set_connection	latin1
+character_set_results	latin1
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 8;
+data
+lazio
+rollback;
+set autocommit=1;
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	latin1
+character_set_connection	latin1
+character_set_results	latin1
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	STRICT_TRANS_TABLES
+SELECT data from user where id = 9;
+data
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	big5
+character_set_connection	big5
+character_set_results	big5
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	
+SELECT data from user where id = 10;
+data
+dog
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	utf8
+character_set_connection	utf8
+character_set_results	utf8
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	
+SELECT data from user where id = 11;
+data
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	latin1
+character_set_connection	latin1
+character_set_results	latin1
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	
+SELECT data from user where id = 12;
+data
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	utf8
+character_set_connection	utf8
+character_set_results	utf8
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	
+SELECT data from user where id = 13;
+data
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	utf8
+character_set_connection	utf8
+character_set_results	utf8
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	
+SELECT data from user where id = 14;
+data
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	latin1
+character_set_connection	latin1
+character_set_results	latin1
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	
+SELECT data from user where id = 15;
+data
+show variables where Variable_name regexp 'character_set_[cr]';
+Variable_name	Value
+character_set_client	big5
+character_set_connection	big5
+character_set_results	big5
+show variables where Variable_name like '%sql_mode%';
+Variable_name	Value
+sql_mode	
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+9
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+7
