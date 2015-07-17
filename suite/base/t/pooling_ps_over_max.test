@@ -17,7 +17,9 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#enable_connect_log;
+#  测试用例的目的：
+#      当连接数超过max最大连接数的时候，是否能够以短连接的方式来运作
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -31,11 +33,7 @@ connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port);
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
-connect (conn1,$ip,$user,$pwd,,$port); 
-connect (conn2,$ip,$user,$pwd,,$port); 
-connect (conn3,$ip,$user,$pwd,,$port); 
-connect (conn4,$ip,$user,$pwd,,$port); 
-connect (conn5,$ip,$user,$pwd,,$port); 
+enable_ps_protocol;
 connect (conn6,$ip,$user,$pwd,,$port); 
 connect (conn7,$ip,$user,$pwd,,$port); 
 connect (conn8,$ip,$user,$pwd,,$port); 
@@ -69,23 +67,63 @@ use test;
 set @a=3;
 SELECT data from user where id = @a;
 
-connection conn0;
+temp_disable_ps_protocol;
 
+real_sleep 0.5;
+connection conn0;
 #assume 0
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
-real_sleep 0.5;
-#assume 5
+enable_ps_protocol;
+connect (conn1,$ip,$user,$pwd,,$port); 
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn2,$ip,$user,$pwd,,$port); 
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn3,$ip,$user,$pwd,,$port); 
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn4,$ip,$user,$pwd,,$port); 
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn5,$ip,$user,$pwd,,$port); 
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+temp_disable_ps_protocol;
+
+connection conn0;
+#assume 0
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
-disconnect conn0;
 disconnect conn1;
 disconnect conn2;
 disconnect conn3;
 disconnect conn4;
 disconnect conn5;
+
+connection conn0;
+#assume 3
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
 disconnect conn6;
 disconnect conn7;
 disconnect conn8;
 disconnect conn9;
 disconnect conn10;
+
+connection conn0;
+#assume 8
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disconnect conn0;

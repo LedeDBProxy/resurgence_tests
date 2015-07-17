@@ -17,7 +17,9 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#enable_connect_log;
+#  测试用例的目的：
+#      当主库崩溃后，测试系统是否支持能够读操作
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -28,7 +30,6 @@ let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
 temp_disable_ps_protocol;
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
-#assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 enable_ps_protocol;
@@ -71,7 +72,6 @@ disable_ps_protocol;
 real_sleep 0.5;
 
 connection conn0;
-#assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 delete from backends where backend_ndx = 1;
@@ -86,7 +86,6 @@ SELECT data from user where id = @a;
 temp_disable_ps_protocol;
 real_sleep 0.5;
 connection conn0;
-#assume 0
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 enable_ps_protocol;
@@ -104,7 +103,6 @@ disconnect conn13;
 real_sleep 1;
 temp_disable_ps_protocol;
 connection conn0;
-#assume 2
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 disable_ps_protocol;
@@ -141,11 +139,8 @@ use test;
 set @a=5;
 SELECT data from user where id = @a;
 
-
 real_sleep 0.5;
 connection conn0;
-#assume 8
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-
 
 disconnect conn0;

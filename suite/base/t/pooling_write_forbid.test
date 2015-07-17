@@ -17,7 +17,9 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#enable_connect_log;
+#  测试用例的目的：
+#      主库被删除后，检测写操作是否会发送给读服务器
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -144,7 +146,6 @@ update test set data="wbjyywb" where id = 5;
 
 real_sleep 0.5;
 connection conn0;
-#assume 11
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 

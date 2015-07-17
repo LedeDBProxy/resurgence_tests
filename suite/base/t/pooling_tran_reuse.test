@@ -17,7 +17,9 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#enable_connect_log;
+#  测试用例的目的：
+#      事务完成后，查看这个连接能否被重用
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;

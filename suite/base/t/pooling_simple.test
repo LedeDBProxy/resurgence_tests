@@ -16,7 +16,8 @@
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 #  02110-1301  USA
 # 
-#  $%ENDLICENSE%$
+#  测试用例的目的：
+#     简单示范如何测试
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;

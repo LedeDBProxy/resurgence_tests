@@ -17,7 +17,11 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#enable_connect_log;
+#  Description
+#  此测试用例的目的：
+#     prepare连接，在没有事务结束语句的情况下，客户端关闭连接后，proxy到后端
+#     数据库的连接是否也跟着关闭
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -29,7 +33,6 @@ let $default_db= $DEFAULT_DB;
 
 temp_disable_ps_protocol;
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
-#assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 enable_ps_protocol;

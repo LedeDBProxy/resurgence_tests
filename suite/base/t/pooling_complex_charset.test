@@ -17,7 +17,8 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#enable_connect_log;
+#  测试用例的目的：
+#     测试字符集的设置，全局字符集和character_set_results混合设置情况下，proxy会不会产生字符集紊乱
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;

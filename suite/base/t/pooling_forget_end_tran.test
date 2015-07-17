@@ -17,7 +17,10 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#enable_connect_log;
+#  测试用例的目的：
+#    这是针对非prepare连接的测试
+#    在事务连接没有commit或者rollback情况下，连接池是否工作正常
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;

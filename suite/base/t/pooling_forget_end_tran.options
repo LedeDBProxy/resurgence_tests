@@ -17,5 +17,5 @@
  02110-1301  USA
 
  $%ENDLICENSE%$ --]]
-start_ps_proxy('pooling_complex-test.lua')
+start_ps_proxy('pooling_forget_end_tran-test.lua')
 
