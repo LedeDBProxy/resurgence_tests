@@ -1,0 +1,171 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#  测试用例的目的：
+#      测试begin事务是否能够预期工作
+
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+let $default_port= $DEFAULT_DB;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+disable_ps_protocol;
+connect (conn1,$ip,$user,$pwd,$default_port,$port); 
+connect (conn2,$ip,$user,$pwd,$default_port,$port); 
+connect (conn3,$ip,$user,$pwd,$default_port,$port); 
+connect (conn4,$ip,$user,$pwd,$default_port,$port); 
+connect (conn5,$ip,$user,$pwd,$default_port,$port); 
+
+real_sleep 1;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connection conn1;
+begin;
+update user set data="Hello world" where id = 1;
+update user set data="jyywb" where id = 2;
+commit;
+
+real_sleep 1;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connection conn2;
+begin;
+SELECT data from user where id = 2;
+update user set data="jyywb2" where id = 2;
+rollback;
+
+real_sleep 1;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connection conn3;
+SELECT data from user where id = 2;
+
+real_sleep 1;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connection conn4;
+begin;
+SELECT data from user where id = 4;
+rollback;
+
+real_sleep 1;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connect (conn6,$ip,$user,$pwd,$default_port,$port); 
+begin;
+SELECT data from user where id = 5;
+
+real_sleep 1;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+connection conn5;
+begin;
+SELECT data from user where id = 6;
+
+connect (conn7,$ip,$user,$pwd,$default_port,$port); 
+begin;
+SELECT data from user where id = 7;
+
+connect (conn8,$ip,$user,$pwd,$default_port,$port); 
+begin;
+SELECT data from user where id = 8;
+
+connect (conn9,$ip,$user,$pwd,$default_port,$port); 
+begin;
+SELECT data from user where id = 9;
+
+connect (conn10,$ip,$user,$pwd,$default_port,$port); 
+begin;
+SELECT data from user where id = 10;
+
+connect (conn11,$ip,$user,$pwd,$default_port,$port); 
+begin;
+SELECT data from user where id = 11;
+
+connect (conn12,$ip,$user,$pwd,$default_port,$port); 
+begin;
+SELECT data from user where id = 12;
+
+connect (conn13,$ip,$user,$pwd,$default_port,$port); 
+begin;
+SELECT data from user where id = 13;
+
+connect (conn14,$ip,$user,$pwd,$default_port,$port); 
+--disable_abort_on_error
+begin;
+SELECT data from user where id = 14;
+
+connect (conn15,$ip,$user,$pwd,$default_port,$port); 
+--disable_abort_on_error
+begin;
+SELECT data from user where id = 15;
+
+enable_abort_on_error;
+
+real_sleep 0.5;
+
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+connection conn5;
+rollback;
+connection conn6;
+rollback;
+connection conn7;
+rollback;
+connection conn8;
+rollback;
+connection conn9;
+rollback;
+connection conn10;
+rollback;
+connection conn11;
+rollback;
+connection conn12;
+rollback;
+connection conn13;
+rollback;
+--disable_abort_on_error
+connection conn14;
+rollback;
+connection conn15;
+rollback;
+enable_abort_on_error;
+
+real_sleep 0.5;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+disconnect conn0;
