@@ -1,0 +1,105 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+4
+begin;
+update user set data="Hello world" where id = 1;
+update user set data="jyywb" where id = 2;
+commit;
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+4
+begin;
+SELECT data from user where id = 2;
+data
+jyywb
+update user set data="jyywb2" where id = 2;
+rollback;
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+4
+SELECT data from user where id = 2;
+data
+jyywb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+4
+begin;
+SELECT data from user where id = 4;
+data
+lazio
+rollback;
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+4
+begin;
+SELECT data from user where id = 5;
+data
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+3
+begin;
+SELECT data from user where id = 6;
+data
+wb
+begin;
+SELECT data from user where id = 7;
+data
+jyy
+begin;
+SELECT data from user where id = 8;
+data
+lazio
+begin;
+SELECT data from user where id = 9;
+data
+wb
+begin;
+SELECT data from user where id = 10;
+data
+dog
+begin;
+SELECT data from user where id = 11;
+data
+lazio
+begin;
+SELECT data from user where id = 12;
+data
+begin;
+SELECT data from user where id = 13;
+data
+begin;
+ERROR HY000: Lost connection to MySQL server during query
+SELECT data from user where id = 14;
+ERROR HY000: MySQL server has gone away
+begin;
+ERROR HY000: Lost connection to MySQL server during query
+SELECT data from user where id = 15;
+ERROR HY000: MySQL server has gone away
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+0
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+3
+rollback;
+rollback;
+rollback;
+rollback;
+rollback;
+rollback;
+rollback;
+rollback;
+rollback;
+rollback;
+ERROR HY000: MySQL server has gone away
+rollback;
+ERROR HY000: MySQL server has gone away
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+9
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+3
