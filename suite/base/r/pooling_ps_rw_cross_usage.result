@@ -1,0 +1,116 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+use test;
+DROP TABLE IF EXISTS user_ps_rw;
+CREATE TABLE user_ps_rw
+(
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`data` varchar(100) DEFAULT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO user_ps_rw VALUES (1, 'one');
+INSERT INTO user_ps_rw VALUES (2, 'two');
+use test;
+SELECT data FROM user_ps_rw WHERE id=1;
+data
+one
+SELECT data FROM user WHERE id=3;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+3
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+1
+INSERT INTO user_ps_rw VALUES (3, 'three');
+SELECT data FROM user WHERE id=3;
+data
+wb
+SELECT data FROM user_ps_rw WHERE id=3;
+data
+three
+SELECT data FROM user WHERE id=3;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+2
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+3
+INSERT INTO user_ps_rw VALUES (4, 'four');
+SELECT data FROM user WHERE id=1;
+data
+Hello world
+UPDATE user_ps_rw SET data='one_p' WHERE id=1;
+SELECT id FROM user_ps_rw WHERE data='one_p';
+id
+1
+UPDATE user_ps_rw SET data='two_p' WHERE id=2;
+SELECT id FROM user_ps_rw WHERE data='two_p';
+id
+2
+SELECT * FROM user_ps_rw;
+id	data
+1	one_p
+2	two_p
+3	three
+4	four
+DROP TABLE user_ps_rw;

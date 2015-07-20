@@ -1,0 +1,192 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+
+#
+# Test preparestatements usage both on ro & rw db in one session.
+#
+#enable_connect_log;
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+#assume 1
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+# Init connections for master to warm-up
+enable_ps_protocol;
+connect (conn3,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn4,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn5,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn6,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn7,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+real_sleep 1;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+# Keep on creating in order to connect to slave
+enable_ps_protocol;
+connect (conn8,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn9,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn10,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn11,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn12,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+# Main connection 1
+enable_ps_protocol;
+connect (conn1,$ip,$user,$pwd,,$port);
+use test;
+--disable_warnings
+DROP TABLE IF EXISTS user_ps_rw;
+--enable_warnings
+
+CREATE TABLE user_ps_rw
+(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `data` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO user_ps_rw VALUES (1, 'one');
+INSERT INTO user_ps_rw VALUES (2, 'two');
+
+real_sleep 0.5;
+
+# Main connection 2
+enable_ps_protocol;
+connect (conn2,$ip,$user,$pwd,,$port);
+#assume 0
+use test;
+SELECT data FROM user_ps_rw WHERE id=1;
+
+connection conn1;
+SELECT data FROM user WHERE id=3;
+
+# Free some master's connections
+disconnect conn3;
+disconnect conn4;
+disconnect conn5;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+enable_ps_protocol;
+connection conn2;
+#assume 1
+INSERT INTO user_ps_rw VALUES (3, 'three');
+
+connection conn1;
+SELECT data FROM user WHERE id=3;
+
+connection conn2;
+#assume 2
+SELECT data FROM user_ps_rw WHERE id=3; 
+
+connection conn1;
+SELECT data FROM user WHERE id=3;
+
+# Free some slave's connections
+disconnect conn11;
+disconnect conn12;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+enable_ps_protocol;
+connection conn2;
+#assume 3
+INSERT INTO user_ps_rw VALUES (4, 'four');
+
+connection conn1;
+SELECT data FROM user WHERE id=1;
+
+connection conn2;
+#assume 4
+UPDATE user_ps_rw SET data='one_p' WHERE id=1;
+SELECT id FROM user_ps_rw WHERE data='one_p';
+
+UPDATE user_ps_rw SET data='two_p' WHERE id=2;
+SELECT id FROM user_ps_rw WHERE data='two_p';
+
+connection conn1;
+SELECT * FROM user_ps_rw;
+
+DROP TABLE user_ps_rw;
+
+disconnect conn0;
+disconnect conn1;
+disconnect conn2;
+#disconnect conn3;
+#disconnect conn4;
+#disconnect conn5;
+disconnect conn6;
+disconnect conn7;
+disconnect conn8;
+disconnect conn9;
+disconnect conn10;
+#disconnect conn11;
+#disconnect conn12;
