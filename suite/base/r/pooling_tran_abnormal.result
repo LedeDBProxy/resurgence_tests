@@ -81,7 +81,7 @@ hello,wbjyy5
 use test;
 SELECT data from user where id = 2;
 data
-jyywb
+hello,wbjyy5
 set autocommit=0;
 update user set data="hello,wbjyy6" where id = 2;
 set autocommit=1;

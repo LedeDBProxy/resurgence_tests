@@ -177,23 +177,23 @@ function connect_server()
 
         -- prefer connections to the master 
         if s.type == proxy.BACKEND_TYPE_RW and
-            (s.state ~= proxy.BACKEND_STATE_DOWN and
-            s.state ~= proxy.BACKEND_STATE_MAINTAINING) and
+            (s.state == proxy.BACKEND_STATE_UP or
+            s.state == proxy.BACKEND_STATE_UNKNOWN) and
             ((cur_idle < min_idle_conns and connected_clients < max_idle_conns)
             or cur_idle > 0) then
             proxy.connection.backend_ndx = i
             break
         elseif s.type == proxy.BACKEND_TYPE_RO and
-            (s.state ~= proxy.BACKEND_STATE_DOWN and
-            s.state ~= proxy.BACKEND_STATE_MAINTAINING) and
+            (s.state == proxy.BACKEND_STATE_UP or
+            s.state == proxy.BACKEND_STATE_UNKNOWN) and
             ((cur_idle < min_idle_conns and connected_clients < max_idle_conns)
             or cur_idle > 0) then
             is_backend_conn_keepalive = true
             proxy.connection.backend_ndx = i
             break
         elseif s.type == proxy.BACKEND_TYPE_RW and
-            (s.state ~= proxy.BACKEND_STATE_DOWN and
-            s.state ~= proxy.BACKEND_STATE_MAINTAINING) and
+            (s.state == proxy.BACKEND_STATE_UP or
+            s.state == proxy.BACKEND_STATE_UNKNOWN) and
             rw_ndx == 0 then
             if cur_idle == 0 and connected_clients >= max_idle_conns then
                 if init_phase then 
