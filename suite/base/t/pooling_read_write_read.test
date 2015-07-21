@@ -1,0 +1,150 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+#  测试用例的目的：
+#      测试读操作、写操作、读操作的读写分离是否正常
+
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+
+connect (conn3,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn4,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn5,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn6,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn7,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+real_sleep 1;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+connect (conn8,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn9,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn10,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn11,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+connect (conn12,$ip,$user,$pwd,,$port);
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+real_sleep 1;
+enable_ps_protocol;
+connect (conn1,$ip,$user,$pwd,,$port);
+use test;
+--disable_warnings
+DROP TABLE IF EXISTS user_ps_rw;
+--enable_warnings
+
+CREATE TABLE user_ps_rw
+(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `data` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO user_ps_rw VALUES (1, 'one');
+INSERT INTO user_ps_rw VALUES (2, 'two');
+
+real_sleep 1;
+
+enable_ps_protocol;
+connect (conn2,$ip,$user,$pwd,,$port);
+use test;
+set @a=1;
+SELECT data FROM user_ps_rw WHERE id=@a;
+
+real_sleep 1;
+connection conn1;
+SELECT data FROM user WHERE id=3;
+
+real_sleep 1;
+disconnect conn3;
+disconnect conn4;
+disconnect conn5;
+
+
+real_sleep 1;
+enable_ps_protocol;
+connection conn2;
+INSERT INTO user_ps_rw VALUES (3, 'three');
+
+real_sleep 1;
+connection conn1;
+SELECT data FROM user WHERE id=3;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+real_sleep 1;
+connection conn2;
+SELECT data FROM user_ps_rw WHERE id=4; 
+

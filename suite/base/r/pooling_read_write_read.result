@@ -1,0 +1,91 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+use test;
+set @a=3;
+SELECT data from user where id = @a;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+use test;
+DROP TABLE IF EXISTS user_ps_rw;
+CREATE TABLE user_ps_rw
+(
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`data` varchar(100) DEFAULT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO user_ps_rw VALUES (1, 'one');
+INSERT INTO user_ps_rw VALUES (2, 'two');
+use test;
+set @a=1;
+SELECT data FROM user_ps_rw WHERE id=@a;
+data
+SELECT data FROM user WHERE id=3;
+data
+wb
+INSERT INTO user_ps_rw VALUES (3, 'three');
+SELECT data FROM user WHERE id=3;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+2
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+1
+SELECT data FROM user_ps_rw WHERE id=4;
+data

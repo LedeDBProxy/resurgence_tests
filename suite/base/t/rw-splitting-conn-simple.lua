@@ -485,7 +485,7 @@ function read_query( packet )
                     proxy.connection.backend_ndx = backend_ndx
 
                     if is_debug then
-                        print("  [use ro server: " .. backend_ndx .. "]")
+                        print("  [1,use ro server: " .. backend_ndx .. "]")
                     end
                 end
 
@@ -572,7 +572,7 @@ function read_query( packet )
                     proxy.connection.backend_ndx = backend_ndx
 
                     if is_debug then
-                        print("  [use ro server: " .. backend_ndx .. "]")
+                        print("  [2,use ro server: " .. backend_ndx .. "]")
                     end
                 end
                 if stmt.token_name == "TK_SQL_USE" then
@@ -675,7 +675,7 @@ function read_query( packet )
                             proxy.connection.backend_ndx = backend_ndx
 
                             if is_debug then
-                                print("  [use ro server: " .. backend_ndx .. "]")
+                                print("  [3,use ro server: " .. backend_ndx .. "]")
                             end
                         end
                     end
@@ -765,6 +765,7 @@ function read_query( packet )
             end
             proxy.connection.change_server_by_rw = backend_ndx
         end
+        conn_reserved = true
     end
 
     if is_debug then
