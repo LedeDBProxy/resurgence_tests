@@ -757,7 +757,7 @@ function start_ps_proxy (second_lua_script)
 			["admin-password"]			= "password",
 			["admin-lua-script"]   	    = PROXY_LUAPATH,
 			["basedir"]					= PROXY_TEST_BASEDIR,
-			["log-level"]			= (VERBOSE == 3) and "debug" or "debug",
+			["log-level"]			= (VERBOSE == 3) and "debug" or "message",
 			["log-file"]			= PROXY_LOG_FILE or "proxy.log",
 	}
 	start_proxy('second_proxy',second_proxy_options) 
