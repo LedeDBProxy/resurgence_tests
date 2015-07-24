@@ -1,0 +1,146 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+SELECT * FROM backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	0
+2	10.110.12.193:3307	unknown	ro	NULL	0
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+SELECT * FROM backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	7
+2	10.110.12.193:3307	unknown	ro	NULL	0
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+use test;
+SELECT data from user where id = 3;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+SELECT * FROM backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	8
+2	10.110.12.193:3307	up	ro	NULL	6
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 3;
+ERROR HY000: Lost connection to MySQL server during query
+SELECT data from user where id = 3;
+ERROR HY000: Lost connection to MySQL server during query
+SELECT data from user where id = 3;
+ERROR HY000: Lost connection to MySQL server during query
+SELECT data from user where id = 3;
+ERROR HY000: Lost connection to MySQL server during query
+SELECT data from user where id = 3;
+ERROR HY000: Lost connection to MySQL server during query
+SELECT data from user where id = 3;
+ERROR HY000: Lost connection to MySQL server during query
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+SELECT * FROM backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	8
+2	10.110.12.193:3307	up	ro	NULL	0
+use test;
+SELECT data from user where id = 3;
+data
+wb
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+SELECT * FROM backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	10.110.12.190:3306	up	rw	NULL	9
+2	10.110.12.193:3307	down	ro	NULL	0
