@@ -18,6 +18,8 @@
 # 
 #  $%ENDLICENSE%$
 #enable_connect_log;
+#  本测试用例用于测试管理接口增删改相关的backends的情况是否成功。
+#  注意，可能需要预先在shell的环境变量里设置这些相关的环境变量。
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -49,12 +51,16 @@ update backends set type = 'ro';
 update backends set state = 'maintaining';
 select * from backends;
 
+--disable_query_log
 --error 1105
 connect (conn1,$ip,$user,$pwd,,$port); 
+--enable_query_log
 
 
 connection conn0;
 update backends set state = 'unkown';
+select * from backends;
+
 
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;

@@ -18,5 +18,4 @@
 
  $%ENDLICENSE%$ --]]
 
-start_ps_proxy('pooling_complex-test.lua')
-
+start_ps_proxy()
