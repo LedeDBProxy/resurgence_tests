@@ -1,0 +1,46 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+update user set data="Hellocdwbjbcjw" where id = 1;
+update user set data="jyywbvfeqvf" where id = 2;
+SELECT data from user where id = 2;
+data
+jyywbvfeqvf
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 4;
+data
+lazio
+SELECT data from user where id = 5;
+data
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+0
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+update backends set state = "maintaining" where backend_ndx = 1;
+update backends set state = "maintaining" where backend_ndx = 2;
+update user set data="Hellocdwbjbcjw" where id = 1;
+ERROR 07000: proxy stops serving requests now
+update user set data="jyywbvfeqvf" where id = 2;
+ERROR 07000: proxy stops serving requests now
+SELECT data from user where id = 2;
+ERROR 07000: proxy stops serving requests now
+SELECT data from user where id = 3;
+ERROR 07000: proxy stops serving requests now
+SELECT data from user where id = 4;
+ERROR 07000: proxy stops serving requests now
+SELECT data from user where id = 5;
+ERROR 07000: proxy stops serving requests now
+connect(10.110.12.192,root,123456,test,40000,);
+ERROR HY000: (proxy) all backends are down
+connect(10.110.12.192,root,123456,test,40000,);
+ERROR HY000: (proxy) all backends are down
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+0
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0

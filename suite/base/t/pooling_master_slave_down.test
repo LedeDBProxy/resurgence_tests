@@ -1,0 +1,116 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#  ???????:
+#      ????????,???????
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+let $default_port= $DEFAULT_DB;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+enable_ps_protocol;
+connect (conn1,$ip,$user,$pwd,$default_port,$port); 
+connect (conn2,$ip,$user,$pwd,$default_port,$port); 
+connect (conn3,$ip,$user,$pwd,$default_port,$port); 
+connect (conn4,$ip,$user,$pwd,$default_port,$port); 
+connect (conn5,$ip,$user,$pwd,$default_port,$port); 
+
+real_sleep 2;
+
+connection conn1;
+update user set data="Hellocdwbjbcjw" where id = 1;
+update user set data="jyywbvfeqvf" where id = 2;
+
+connection conn2;
+SELECT data from user where id = 2;
+
+connection conn3;
+SELECT data from user where id = 3;
+
+connection conn4;
+SELECT data from user where id = 4;
+
+connection conn5;
+SELECT data from user where id = 5;
+
+temp_disable_ps_protocol;
+
+real_sleep 0.5;
+
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+update backends set state = "maintaining" where backend_ndx = 1;
+update backends set state = "maintaining" where backend_ndx = 2;
+
+enable_ps_protocol;
+
+connection conn1;
+--error 1105
+update user set data="Hellocdwbjbcjw" where id = 1;
+--error 1105
+update user set data="jyywbvfeqvf" where id = 2;
+
+connection conn2;
+--error 1105
+SELECT data from user where id = 2;
+
+connection conn3;
+--error 1105
+SELECT data from user where id = 3;
+
+connection conn4;
+--error 1105
+SELECT data from user where id = 4;
+
+connection conn5;
+--error 1105
+SELECT data from user where id = 5;
+
+real_sleep 0.5;
+--disable_query_log
+--error 1105
+connect (conn6,$ip,$user,$pwd,$default_port,$port); 
+
+--disable_query_log
+--error 1105
+connect (conn7,$ip,$user,$pwd,$default_port,$port); 
+##--enable_query_log
+#--error 1105
+#SELECT data from user where id = 6;
+
+#connection conn7;
+#--error 1105
+#update user set data="jyywbvfeqvf" where id = 7;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+disconnect conn0;
