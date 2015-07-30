@@ -1,0 +1,113 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+
+
+
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+let $default_port= $DEFAULT_DB;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+#eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+enable_ps_protocol;
+connect (conn1,$ip,$user,$pwd,$default_port,$port); 
+connect (conn2,$ip,$user,$pwd,$default_port,$port); 
+connect (conn3,$ip,$user,$pwd,$default_port,$port); 
+connect (conn4,$ip,$user,$pwd,$default_port,$port); 
+connect (conn5,$ip,$user,$pwd,$default_port,$port); 
+
+#connect (conn6,$ip,$user,$pwd,$default_port,$port); 
+#connect (conn7,$ip,$user,$pwd,$default_port,$port); 
+#connect (conn8,$ip,$user,$pwd,$default_port,$port); 
+#connect (conn9,$ip,$user,$pwd,$default_port,$port); 
+#connect (conn10,$ip,$user,$pwd,$default_port,$port); 
+
+
+real_sleep 2;
+
+
+connection conn1;
+update user set data="1ccc" where id = 1;
+update user set data="1jyywbvfeqvf" where id = 2;
+
+connection conn2;
+update user set data="2Heocidwbjbcjw" where id = 1;
+update user set data="2jiirty" where id = 2;
+
+connection conn3;
+update user set data="3Huytwbjbcjw" where id = 1;
+update user set data="3jynwbvvf" where id = 2;
+
+connection conn4;
+update user set data="4Helwbjw" where id = 1;
+update user set data="4jhwbvfvf" where id = 2;
+
+connection conn5;
+update user set data="5Helloyrbcjw" where id = 1;
+update user set data="5jygfvfeqvf" where id = 2;
+
+temp_disable_ps_protocol;
+
+real_sleep 0.5;
+
+connection conn0;
+#eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+select * from backends;
+
+
+#--error 1105
+exec service mysql stop;
+
+select * from backends;
+
+
+enable_ps_protocol;
+#--error 1105
+connection conn1;
+--error 2013
+update user set data="1ccc" where id = 1;
+--error 2013
+update user set data="1jyywbvfeqvf" where id = 2;
+
+connect (conn6,$ip,$user,$pwd,$default_port,$port);
+--error 2013
+update user set data="6ccc" where id = 1;
+
+temp_disable_ps_protocol;
+
+real_sleep 0.5;
+
+connection conn0;
+#eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+select * from backends;
+disconnect conn0;
+disconnect conn1;
+disconnect conn2;
+disconnect conn3;
+disconnect conn4;
+disconnect conn5;
