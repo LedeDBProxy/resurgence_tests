@@ -119,7 +119,7 @@ ADMIN_MASTER_PORT  = os.getenv("ADMIN_MASTER_PORT")	or tostring(port_base + 25)
 ADMIN_SLAVE_PORT   = os.getenv("ADMIN_SLAVE_PORT")	or tostring(port_base + 35)
 ADMIN_CHAIN_PORT   = os.getenv("ADMIN_CHAIN_PORT")	or tostring(port_base + 45)
 ADMIN_USER	   = os.getenv("ADMIN_USER")		or "root"
-ADMIN_PASSWORD	   = os.getenv("ADMIN_PASSWORD")	or ""
+ADMIN_PASSWORD	   = os.getenv("ADMIN_PASSWORD")	or os.getenv("PROXY_ADMIN_PASSWORD") or ""
 ADMIN_DEFAULT_SCRIPT_FILENAME = os.getenv("ADMIN_DEFAULT_SCRIPT_FILENAME")	or ""
 -- local PROXY_TMP_LUASCRIPT = os.getenv("PROXY_TMP_LUASCRIPT") or "/tmp/proxy.tmp.lua"
 
@@ -513,17 +513,20 @@ function conditional_execute (cmd)
 end
 
 local function need_ps_flag(filename)
+	local need_ps_support, need_modified_mysqltest = false, false
 	print("reading FILE:"..filename)
 	local file = io.open(filename, 'r')
 
 	for line in file:lines() do
 		if line:match('able_ps_protocol') then
-			file:close()
-			return true
+			need_ps_support = true
+			if line:match('temp_disable_ps_protocol') then
+				need_modified_mysqltest = true
+			end
 		end
 	end
 	file:close()
-	return false
+	return need_ps_support, need_modified_mysqltest
 end
 
 --- 
@@ -539,11 +542,20 @@ function run_test(filename, basedir)
 		print('skip ' .. testname ..' '.. (tests_to_skip[testname] or 'no reason given') )
 		return 0, 1
 	end
+
+	local need_ps_support, need_modified_mysqltest = need_ps_flag(basedir .. "/t/" .. testname .. ".test")
+
+	if need_modified_mysqltest and not have_modified_mysqltest then
+		print('skip ' .. testname ..' '.. 'you need patch mysqltest first' )
+		return 0, 1
+	end
+
 	before_test(basedir, testname)
 	if VERBOSE > 1 then		
 		os.execute('echo -n "' .. testname  .. ' " ; ' )
 	end
 	local result = 0
+
 	local ret = conditional_execute(
 		env_options_tostring({
 			['MYSQL_USER']  = MYSQL_USER,
@@ -820,20 +832,22 @@ end
 -- in case you want to start several backend_proxies, just provide a array
 -- as first param
 --
--- @param backend_lua_script
-function start_ps_proxy (backend_lua_script)
+-- @param proxy_lua_script
+-- @param proxy_options
+function start_ps_proxy (proxy_lua_script, proxy_options)
 	local DEFAULT_PS_SCRIPT_FILENAME = './rw-splitting-conn-simple.lua'
 	if default_proxy_options['proxy-lua-script'] and 
 		default_proxy_options['proxy-lua-script'] ~= DEFAULT_SCRIPT_FILENAME then
 		DEFAULT_PS_SCRIPT_FILENAME = default_proxy_options['proxy-lua-script']
 	end
 
+	-- Init Options.
 	local ps_proxy_options = {
 			["proxy-backend-addresses"] = MYSQL_HOST .. ":" .. MYSQL_PORT,
 			["proxy-read-only-backend-addresses"] = MYSQL_RO_HOST .. ":" .. MYSQL_RO_PORT,
 			["proxy-address"]		   	= PROXY_HOST .. ":" .. PROXY_PORT,
 			["pid-file"]				= PROXY_PIDFILE,
-			["proxy-lua-script"]		= backend_lua_script or DEFAULT_PS_SCRIPT_FILENAME,
+			["proxy-lua-script"]		= proxy_lua_script or DEFAULT_PS_SCRIPT_FILENAME,
 			["plugin-dir"]			= PROXY_LIBPATH,
             ["plugins"]			        = {"proxy","admin"},
 			["admin-username"]		    = "root",
@@ -844,6 +858,19 @@ function start_ps_proxy (backend_lua_script)
 			["log-level"]			= (VERBOSE == 3) and "debug" or "message",
 			["log-file"]			= PROXY_LOG_FILE or "proxy.log",
 	}
+	
+	-- Load user defined options.
+	-- If use want to disable one option in default , just set it to string "nil"
+	if type(proxy_options) == "table" then
+		for k,v in pairs(proxy_options) do
+			if v == "nil" then
+				ps_proxy_options[k] = nil
+			else
+				ps_proxy_options[k] = v
+			end
+		end
+	end
+	
 	start_proxy('rwsplit_ps_proxy',ps_proxy_options) 
 end
 
@@ -855,6 +882,15 @@ local all_ok		= true
 local failed_test   = {}
 
 file_empty(DEFAULT_SCRIPT_FILENAME)
+
+have_modified_mysqltest = false
+local fpipe = io.popen('echo -n "temp_disable_ps_protocol;" | '.. MYSQL_TEST_BIN ..' 2>&1')
+local fline = fpipe:read('*a')
+if not fline:match("error in your SQL syntax") then
+	have_modified_mysqltest = true
+end
+
+print('You ' .. (have_modified_mysqltest and "" or "don't ") .. 'have modified mysqltest installed!')
 
 --
 -- if we have a argument, exectute the named test

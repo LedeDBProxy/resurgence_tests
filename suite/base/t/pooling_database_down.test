@@ -52,24 +52,28 @@ real_sleep 2;
 
 
 connection conn1;
-update user set data="1ccc" where id = 1;
-update user set data="1jyywbvfeqvf" where id = 2;
+let $old_data =query_get_value(select data from user where id = 1, data, 1);
+let $old_data_2 =query_get_value(select data from user where id = 2, data, 1);
+update user set data=concat(data, "1") where id = 1;
+update user set data=concat(data, "1") where id = 2;
 
 connection conn2;
-update user set data="2Heocidwbjbcjw" where id = 1;
-update user set data="2jiirty" where id = 2;
+update user set data=concat(data, "2") where id = 1;
+update user set data=concat(data, "2") where id = 2;
 
 connection conn3;
-update user set data="3Huytwbjbcjw" where id = 1;
-update user set data="3jynwbvvf" where id = 2;
+update user set data=concat(data, "3") where id = 1;
+update user set data=concat(data, "3") where id = 2;
 
 connection conn4;
-update user set data="4Helwbjw" where id = 1;
-update user set data="4jhwbvfvf" where id = 2;
+update user set data=concat(data, "4") where id = 1;
+update user set data=concat(data, "4") where id = 2;
 
 connection conn5;
-update user set data="5Helloyrbcjw" where id = 1;
-update user set data="5jygfvfeqvf" where id = 2;
+--disable_query_log
+eval update user set data="$old_data" where id = 1;
+eval update user set data="$old_data_2" where id = 2;
+--enable_query_log
 
 temp_disable_ps_protocol;
 
@@ -90,13 +94,13 @@ enable_ps_protocol;
 #--error 1105
 connection conn1;
 --error 2013
-update user set data="1ccc" where id = 1;
+update user set data=concat(data, "1") where id = 1;
 --error 2013
-update user set data="1jyywbvfeqvf" where id = 2;
+update user set data=concat(data, "1") where id = 2;
 
 connect (conn6,$ip,$user,$pwd,$default_port,$port);
 --error 2013
-update user set data="6ccc" where id = 1;
+update user set data=concat(data, "6") where id = 1;
 
 temp_disable_ps_protocol;
 

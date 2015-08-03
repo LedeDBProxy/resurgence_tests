@@ -29,6 +29,7 @@ let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 let $default_port= $DEFAULT_DB;
 
 temp_disable_ps_protocol;
+--disable_connect_log
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
@@ -42,8 +43,12 @@ connect (conn5,$ip,$user,$pwd,$default_port,$port);
 real_sleep 2;
 
 connection conn1;
-update user set data="Hellocdwbjbcjw" where id = 1;
-update user set data="jyywbvfeqvf" where id = 2;
+let $old_data=query_get_value(select data from user where id = 1, data, 1);
+update user set data=concat(data, "1") where id = 1;
+--disable_query_log
+eval update user set data="$old_data" where id = 1;
+--enable_query_log
+
 
 connection conn2;
 SELECT data from user where id = 2;
@@ -62,8 +67,10 @@ temp_disable_ps_protocol;
 real_sleep 0.5;
 
 connection conn0;
+--disable_query_log
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+--enable_query_log
 
 update backends set state = "maintaining" where backend_ndx = 1;
 update backends set state = "maintaining" where backend_ndx = 2;
@@ -72,9 +79,9 @@ enable_ps_protocol;
 
 connection conn1;
 --error 1105
-update user set data="Hellocdwbjbcjw" where id = 1;
+update user set data=concat(data, "1") where id = 1;
 --error 1105
-update user set data="jyywbvfeqvf" where id = 2;
+update user set data=concat(data, "1") where id = 2;
 
 connection conn2;
 --error 1105
@@ -97,7 +104,6 @@ real_sleep 0.5;
 --error 1105
 connect (conn6,$ip,$user,$pwd,$default_port,$port); 
 
---disable_query_log
 --error 1105
 connect (conn7,$ip,$user,$pwd,$default_port,$port); 
 ##--enable_query_log

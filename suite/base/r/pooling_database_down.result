@@ -1,16 +1,14 @@
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 1
-update user set data="1ccc" where id = 1;
-update user set data="1jyywbvfeqvf" where id = 2;
-update user set data="2Heocidwbjbcjw" where id = 1;
-update user set data="2jiirty" where id = 2;
-update user set data="3Huytwbjbcjw" where id = 1;
-update user set data="3jynwbvvf" where id = 2;
-update user set data="4Helwbjw" where id = 1;
-update user set data="4jhwbvfvf" where id = 2;
-update user set data="5Helloyrbcjw" where id = 1;
-update user set data="5jygfvfeqvf" where id = 2;
+update user set data=concat(data, "1") where id = 1;
+update user set data=concat(data, "1") where id = 2;
+update user set data=concat(data, "2") where id = 1;
+update user set data=concat(data, "2") where id = 2;
+update user set data=concat(data, "3") where id = 1;
+update user set data=concat(data, "3") where id = 2;
+update user set data=concat(data, "4") where id = 1;
+update user set data=concat(data, "4") where id = 2;
 select * from backends;
 backend_ndx	address	state	type	uuid	connected_clients
 1	127.0.0.1:3306	up	rw	NULL	5

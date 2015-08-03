@@ -18,4 +18,8 @@
 
  $%ENDLICENSE%$ --]]
 
-start_ps_proxy()
+simulate_replication()
+start_ps_proxy(nil, {
+				["proxy-backend-addresses"] = PROXY_HOST .. ":" .. PROXY_MASTER_PORT,
+				["proxy-read-only-backend-addresses"] = PROXY_HOST .. ":" .. PROXY_SLAVE_PORT,
+				})
