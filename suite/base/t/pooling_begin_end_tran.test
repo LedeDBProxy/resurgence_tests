@@ -20,6 +20,9 @@
 #  测试用例的目的：
 #      测试begin事务是否能够预期工作
 
+
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -33,6 +36,8 @@ temp_disable_ps_protocol;
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
+#create connections
+
 disable_ps_protocol;
 connect (conn1,$ip,$user,$pwd,$default_port,$port); 
 connect (conn2,$ip,$user,$pwd,$default_port,$port); 
@@ -44,6 +49,7 @@ real_sleep 1;
 connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
+#start
 connection conn1;
 begin;
 update user set data="Hello world" where id = 1;

@@ -20,6 +20,8 @@
 #  测试用例的目的：
 #      事务完成后，查看这个连接能否被重用
 
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -30,12 +32,14 @@ let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 let $default_db= $DEFAULT_DB;
 
 temp_disable_ps_protocol;
+
+#create connection for administration
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 disable_ps_protocol;
-
+#create connections and test
 connect (conn1,$ip,$user,$pwd,$default_db,$port); 
 set autocommit=0;
 update user set data="wbjyywb" where id = 2;

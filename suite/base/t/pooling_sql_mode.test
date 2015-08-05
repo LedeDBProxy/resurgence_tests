@@ -20,6 +20,8 @@
 #  测试用例的目的：
 #      测试sql mode设置，并且查看连接池是否在sql mode方面会发生紊乱
 
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -30,6 +32,8 @@ let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 let $default_db= $DEFAULT_DB;
 
 disable_ps_protocol;
+
+##create connections and test
 connect (conn1,$ip,$user,$pwd,$default_db,$port); 
 SET NAMES utf8;
 SET character_set_results = NULL;

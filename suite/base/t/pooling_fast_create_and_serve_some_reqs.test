@@ -20,6 +20,8 @@
 #  测试用例的目的：
 #      刚开始创建大量连接，突破max限制，选择性服务部分请求后，查看空闲连接数量是否满足符合预期
 
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -29,10 +31,15 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
 temp_disable_ps_protocol;
+#create connection for administration
+
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
+#create connections for test
+
+#firstly, number of connections is more than the max
 connect (conn1,$ip,$user,$pwd,,$port); 
 connect (conn2,$ip,$user,$pwd,,$port); 
 connect (conn3,$ip,$user,$pwd,,$port); 
@@ -45,7 +52,7 @@ connect (conn9,$ip,$user,$pwd,,$port);
 connect (conn10,$ip,$user,$pwd,,$port); 
 
 real_sleep 0.5;
-
+#choose some connections to check
 connection conn6;
 use test;
 set @a=3;
@@ -74,11 +81,15 @@ SELECT data from user where id = @a;
 connection conn0;
 
 #assume 0
+#check the number of connections
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 real_sleep 0.5;
 #assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+
+#clean up
 
 disconnect conn0;
 disconnect conn1;

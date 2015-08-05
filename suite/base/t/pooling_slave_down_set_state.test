@@ -22,6 +22,9 @@
 # Test preparestatements usage both on ro & rw db in one session.
 #
 #enable_connect_log;
+
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -31,6 +34,8 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
 temp_disable_ps_protocol;
+
+#create connection for administration
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
@@ -39,6 +44,7 @@ SELECT * FROM backends;
 
 # Init connections for master to warm-up
 enable_ps_protocol;
+#create connections and test
 connect (conn1,$ip,$user,$pwd,,$port);
 use test;
 SELECT data from user where id = 3;
@@ -168,6 +174,7 @@ SELECT * FROM backends;
 
 --exec /bin/sh base/t/pooling_slave_down_set_state.sh start $MYSQL_RO_HOST
 
+#clean up
 disconnect conn0;
 disconnect conn1;
 disconnect conn2;

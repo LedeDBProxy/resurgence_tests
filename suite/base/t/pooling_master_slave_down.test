@@ -19,6 +19,9 @@
 #  $%ENDLICENSE%$
 #  ???????:
 #      ????????,???????
+
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -28,12 +31,15 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 let $default_port= $DEFAULT_DB;
 
+#create connection for administration
+
 temp_disable_ps_protocol;
 --disable_connect_log
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 enable_ps_protocol;
+#create connections for test
 connect (conn1,$ip,$user,$pwd,$default_port,$port); 
 connect (conn2,$ip,$user,$pwd,$default_port,$port); 
 connect (conn3,$ip,$user,$pwd,$default_port,$port); 
@@ -41,7 +47,7 @@ connect (conn4,$ip,$user,$pwd,$default_port,$port);
 connect (conn5,$ip,$user,$pwd,$default_port,$port); 
 
 real_sleep 2;
-
+#start test
 connection conn1;
 let $old_data=query_get_value(select data from user where id = 1, data, 1);
 update user set data=concat(data, "1") where id = 1;
@@ -118,5 +124,5 @@ temp_disable_ps_protocol;
 connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval select conn_num from backends where backend_ndx = 2 and user = "$user";
-
+#clean up
 disconnect conn0;

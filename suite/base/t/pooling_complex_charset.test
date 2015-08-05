@@ -19,6 +19,9 @@
 #  $%ENDLICENSE%$
 #  测试用例的目的：
 #     测试字符集的设置，全局字符集和character_set_results混合设置情况下，proxy会不会产生字符集紊乱
+
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -28,13 +31,16 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 let $default_db= $DEFAULT_DB;
 
+#create connections and start test
 disable_ps_protocol;
+#utf8
 connect (conn1,$ip,$user,$pwd,$default_db,$port); 
 SET NAMES utf8;
 SET character_set_results = NULL;
 SELECT data from user where id = 1;
 show variables where Variable_name regexp 'character_set_[cr]';
 
+#latin1
 connect (conn2,$ip,$user,$pwd,$default_db,$port); 
 SET NAMES latin1;
 SET character_set_results = NULL;

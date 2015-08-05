@@ -20,6 +20,8 @@
 #  测试用例的目的：
 #      缓慢建立连接场景下，连接池是如何工作的
 
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -29,10 +31,11 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
 temp_disable_ps_protocol;
+#create connection for administration
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-
+#create connections and test
 connect (conn1,$ip,$user,$pwd,,$port); 
 character_set utf8;
 use test;
@@ -120,7 +123,7 @@ real_sleep 0.5;
 connection conn0;
 #assume 5
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-
+#clean up
 disconnect conn1;
 disconnect conn2;
 disconnect conn3;

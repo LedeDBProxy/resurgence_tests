@@ -22,6 +22,9 @@
 #     prepare连接，在没有事务结束语句的情况下，客户端关闭连接后，proxy到后端
 #     数据库的连接是否也跟着关闭
 
+
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -32,11 +35,14 @@ let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 let $default_db= $DEFAULT_DB;
 
 temp_disable_ps_protocol;
+
+#create connection for administration
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 enable_ps_protocol;
 
+#create connections and test
 connect (conn1,$ip,$user,$pwd,,$port); 
 use test;
 set autocommit=0;
@@ -138,4 +144,5 @@ connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval select conn_num from backends where backend_ndx = 2 and user = "$user";
 
+#clean up
 disconnect conn0;

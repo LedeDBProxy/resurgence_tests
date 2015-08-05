@@ -19,6 +19,7 @@
 #  $%ENDLICENSE%$
 
 
+#set up parameters
 
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
@@ -29,28 +30,27 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 let $default_port= $DEFAULT_DB;
 
+#create connection for administration
+
 temp_disable_ps_protocol;
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 #eval select conn_num from backends where backend_ndx = 2 and user = "$user";
 
 enable_ps_protocol;
+#create connections for test
+
 connect (conn1,$ip,$user,$pwd,$default_port,$port); 
 connect (conn2,$ip,$user,$pwd,$default_port,$port); 
 connect (conn3,$ip,$user,$pwd,$default_port,$port); 
 connect (conn4,$ip,$user,$pwd,$default_port,$port); 
 connect (conn5,$ip,$user,$pwd,$default_port,$port); 
 
-#connect (conn6,$ip,$user,$pwd,$default_port,$port); 
-#connect (conn7,$ip,$user,$pwd,$default_port,$port); 
-#connect (conn8,$ip,$user,$pwd,$default_port,$port); 
-#connect (conn9,$ip,$user,$pwd,$default_port,$port); 
-#connect (conn10,$ip,$user,$pwd,$default_port,$port); 
-
 
 real_sleep 2;
 
-
+#start test
+#connect to master
 connection conn1;
 let $old_data =query_get_value(select data from user where id = 1, data, 1);
 let $old_data_2 =query_get_value(select data from user where id = 2, data, 1);
@@ -84,7 +84,7 @@ connection conn0;
 select * from backends;
 
 
-#--error 1105
+#stop mysql and check connections
 exec service mysql stop;
 
 select * from backends;
@@ -109,6 +109,9 @@ real_sleep 0.5;
 connection conn0;
 #eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 select * from backends;
+
+#clean up
+
 disconnect conn0;
 disconnect conn1;
 disconnect conn2;
