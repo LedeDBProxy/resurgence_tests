@@ -29,7 +29,7 @@ let $admin_port= $PROXY_ADMIN_PORT;
 let $user= $MYSQL_USER;
 let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
-let $default_port= $DEFAULT_DB;
+let $default_db= $DEFAULT_DB;
 
 #create connection for administration
 
@@ -40,11 +40,11 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 enable_ps_protocol;
 #create connections for test
-connect (conn1,$ip,$user,$pwd,$default_port,$port); 
-connect (conn2,$ip,$user,$pwd,$default_port,$port); 
-connect (conn3,$ip,$user,$pwd,$default_port,$port); 
-connect (conn4,$ip,$user,$pwd,$default_port,$port); 
-connect (conn5,$ip,$user,$pwd,$default_port,$port); 
+connect (conn1,$ip,$user,$pwd,$default_db,$port); 
+connect (conn2,$ip,$user,$pwd,$default_db,$port); 
+connect (conn3,$ip,$user,$pwd,$default_db,$port); 
+connect (conn4,$ip,$user,$pwd,$default_db,$port); 
+connect (conn5,$ip,$user,$pwd,$default_db,$port); 
 
 real_sleep 2;
 #start test
@@ -108,10 +108,10 @@ SELECT data from user where id = 5;
 real_sleep 0.5;
 --disable_query_log
 --error 1105
-connect (conn6,$ip,$user,$pwd,$default_port,$port); 
+connect (conn6,$ip,$user,$pwd,$default_db,$port); 
 
 --error 1105
-connect (conn7,$ip,$user,$pwd,$default_port,$port); 
+connect (conn7,$ip,$user,$pwd,$default_db,$port); 
 ##--enable_query_log
 #--error 1105
 #SELECT data from user where id = 6;

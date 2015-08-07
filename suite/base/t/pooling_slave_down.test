@@ -29,7 +29,7 @@ let $admin_port= $PROXY_ADMIN_PORT;
 let $user= $MYSQL_USER;
 let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
-let $default_port= $DEFAULT_DB;
+let $default_db= $DEFAULT_DB;
 
 temp_disable_ps_protocol;
 
@@ -40,11 +40,11 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 enable_ps_protocol;
 
 #create connection for test
-connect (conn1,$ip,$user,$pwd,$default_port,$port); 
-connect (conn2,$ip,$user,$pwd,$default_port,$port); 
-connect (conn3,$ip,$user,$pwd,$default_port,$port); 
-connect (conn4,$ip,$user,$pwd,$default_port,$port); 
-connect (conn5,$ip,$user,$pwd,$default_port,$port); 
+connect (conn1,$ip,$user,$pwd,$default_db,$port); 
+connect (conn2,$ip,$user,$pwd,$default_db,$port); 
+connect (conn3,$ip,$user,$pwd,$default_db,$port); 
+connect (conn4,$ip,$user,$pwd,$default_db,$port); 
+connect (conn5,$ip,$user,$pwd,$default_db,$port); 
 
 real_sleep 2;
 #start test
@@ -65,19 +65,19 @@ SELECT data from user where id = 4;
 connection conn5;
 SELECT data from user where id = 5;
 
-connect (conn6,$ip,$user,$pwd,$default_port,$port); 
+connect (conn6,$ip,$user,$pwd,$default_db,$port); 
 SELECT data from user where id = 6;
 
-connect (conn7,$ip,$user,$pwd,$default_port,$port); 
+connect (conn7,$ip,$user,$pwd,$default_db,$port); 
 SELECT data from user where id = 7;
 
-connect (conn8,$ip,$user,$pwd,$default_port,$port); 
+connect (conn8,$ip,$user,$pwd,$default_db,$port); 
 SELECT data from user where id = 8;
 
-connect (conn9,$ip,$user,$pwd,$default_port,$port); 
+connect (conn9,$ip,$user,$pwd,$default_db,$port); 
 SELECT data from user where id = 9;
 
-connect (conn10,$ip,$user,$pwd,$default_port,$port); 
+connect (conn10,$ip,$user,$pwd,$default_db,$port); 
 SELECT data from user where id = 10;
 
 temp_disable_ps_protocol;
@@ -91,7 +91,7 @@ eval select conn_num from backends where backend_ndx = 2 and user = "$user";
 update backends set state = "maintaining" where backend_ndx = 2;
 
 enable_ps_protocol;
-connect (conn11,$ip,$user,$pwd,$default_port,$port); 
+connect (conn11,$ip,$user,$pwd,$default_db,$port); 
 SELECT data from user where id = 11;
 
 real_sleep 0.5;
