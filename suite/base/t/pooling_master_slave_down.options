@@ -17,9 +17,5 @@
  02110-1301  USA
 
  $%ENDLICENSE%$ --]]
+start_ps_proxy('pooling_master_slave_down-test.lua')
 
-simulate_replication()
-start_ps_proxy(nil, {
-				["proxy-backend-addresses"] = PROXY_HOST .. ":" .. PROXY_MASTER_PORT,
-				["proxy-read-only-backend-addresses"] = PROXY_HOST .. ":" .. PROXY_SLAVE_PORT,
-				})

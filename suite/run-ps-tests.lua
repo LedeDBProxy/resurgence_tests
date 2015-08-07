@@ -82,6 +82,7 @@ local MYSQL_USER	 	= os.getenv("MYSQL_USER")	 	or "test"
 local MYSQL_PASSWORD 	= os.getenv("MYSQL_PASSWORD") 	or "test"
 local MYSQL_HOST	 	= os.getenv("MYSQL_HOST")	 	or "127.0.0.1"
 local MYSQL_PORT	 	= os.getenv("MYSQL_PORT")	 	or "3306"
+local MYSQL_DB	   		= os.getenv("MYSQL_DB")	   		or "test"
 local MYSQL_RO_HOST	 	= os.getenv("MYSQL_RO_HOST")	or "127.0.0.1"
 local MYSQL_RO_PORT	 	= os.getenv("MYSQL_RO_PORT")	or "3306"
 local MYSQL_TEST_BIN 	= os.getenv("MYSQL_TEST_BIN") 	or "mysqltest"
@@ -118,7 +119,7 @@ ADMIN_MASTER_PORT  = os.getenv("ADMIN_MASTER_PORT")	or tostring(port_base + 25)
 ADMIN_SLAVE_PORT   = os.getenv("ADMIN_SLAVE_PORT")	or tostring(port_base + 35)
 ADMIN_CHAIN_PORT   = os.getenv("ADMIN_CHAIN_PORT")	or tostring(port_base + 45)
 ADMIN_USER	   = os.getenv("ADMIN_USER")		or "root"
-ADMIN_PASSWORD	   = os.getenv("ADMIN_PASSWORD")	or ""
+ADMIN_PASSWORD	   = os.getenv("ADMIN_PASSWORD")	or os.getenv("PROXY_ADMIN_PASSWORD") or ""
 ADMIN_DEFAULT_SCRIPT_FILENAME = os.getenv("ADMIN_DEFAULT_SCRIPT_FILENAME")	or ""
 -- local PROXY_TMP_LUASCRIPT = os.getenv("PROXY_TMP_LUASCRIPT") or "/tmp/proxy.tmp.lua"
 
@@ -511,6 +512,23 @@ function conditional_execute (cmd)
 	end
 end
 
+local function need_ps_flag(filename)
+	local need_ps_support, need_modified_mysqltest = false, false
+	print("reading FILE:"..filename)
+	local file = io.open(filename, 'r')
+
+	for line in file:lines() do
+		if line:match('able_ps_protocol') then
+			need_ps_support = true
+			if line:match('temp_disable_ps_protocol') then
+				need_modified_mysqltest = true
+			end
+		end
+	end
+	file:close()
+	return need_ps_support, need_modified_mysqltest
+end
+
 --- 
 -- run a test
 --
@@ -524,19 +542,32 @@ function run_test(filename, basedir)
 		print('skip ' .. testname ..' '.. (tests_to_skip[testname] or 'no reason given') )
 		return 0, 1
 	end
+
+	local need_ps_support, need_modified_mysqltest = need_ps_flag(basedir .. "/t/" .. testname .. ".test")
+
+	if need_modified_mysqltest and not have_modified_mysqltest then
+		print('skip ' .. testname ..' '.. 'you need patch mysqltest first' )
+		return 0, 1
+	end
+
 	before_test(basedir, testname)
 	if VERBOSE > 1 then		
 		os.execute('echo -n "' .. testname  .. ' " ; ' )
 	end
 	local result = 0
+
 	local ret = conditional_execute(
 		env_options_tostring({
 			['MYSQL_USER']  = MYSQL_USER,
 			['MYSQL_PASSWORD']  = MYSQL_PASSWORD,
 			['PROXY_HOST']  = PROXY_HOST,
 			['PROXY_PORT']  = PROXY_PORT,
+			['PROXY_CHAIN_PORT']  = PROXY_CHAIN_PORT,
 			['MASTER_PORT'] = PROXY_MASTER_PORT,
 			['SLAVE_PORT'] = PROXY_SLAVE_PORT,
+			['PROXY_ADMIN_PORT'] = ADMIN_PORT,
+			['PROXY_ADMIN_PASSWORD'] = ADMIN_PASSWORD,
+			['DEFAULT_DB'] = MYSQL_DB,
 		}) .. ' ' ..
 		MYSQL_TEST_BIN .. " " ..
 		options_tostring({
@@ -545,7 +576,7 @@ function run_test(filename, basedir)
 			host	 = PROXY_HOST,
 			port	 = PROXY_PORT,
 			verbose  = (VERBOSE > 0) and "TRUE" or "FALSE", -- pass down the verbose setting 
-			["ps-protocol"] = "with_no_value", 
+			["ps-protocol"] = (need_ps_flag(basedir .. "/t/" .. testname .. ".test") and "with_no_value" or nil), 
 			["test-file"] = basedir .. "/t/" .. testname .. ".test",
 			["result-file"] = basedir .. "/r/" .. testname .. ".result",
 			["logdir"] = builddir, -- the .result dir might not be writable
@@ -744,23 +775,103 @@ end
 -- @param backend_lua_script
 -- @param second_lua_script 
 -- @param use_replication uses a master proxy as backend 
-function start_ps_proxy (second_lua_script)
+function chain_proxy (backend_lua_scripts, second_lua_script, use_replication)
+	local backends = { }
+
+	if type(backend_lua_scripts) == "table" then
+		backends = backend_lua_scripts
+	else
+		backends = { backend_lua_scripts }
+	end
+
+	local backend_addresses = { }
+
+	for i, backend_lua_script in ipairs(backends) do
+		backend_addresses[i] = PROXY_HOST .. ":" .. (PROXY_CHAIN_PORT + i - 1)
+
+		backend_proxy_options = {
+			["proxy-backend-addresses"] = MYSQL_HOST .. ":" .. MYSQL_PORT,
+			["proxy-address"]		   = backend_addresses[i],
+			["pid-file"]				= PROXY_CHAIN_PIDFILE .. i,
+			["proxy-lua-script"]		= backend_lua_script or DEFAULT_SCRIPT_FILENAME,
+			["plugin-dir"]			= PROXY_LIBPATH,
+			["basedir"]					= PROXY_TEST_BASEDIR,
+			["log-level"]			= (VERBOSE == 4) and "debug" or "critical",
+		}
+		-- 
+		-- if replication was not started, then it is started here
+		--
+		if use_replication and (use_replication == true) then
+			if (proxy_list['master'] == nil) then
+				simulate_replication()
+			end
+			backend_proxy_options["proxy-backend-addresses"] = PROXY_HOST .. ':' .. PROXY_MASTER_PORT
+		end
+		start_proxy('backend_proxy' .. i, backend_proxy_options) 
+	end
+
 	second_proxy_options = {
+			["proxy-backend-addresses"] = backend_addresses ,
+			["proxy-address"]		   	= PROXY_HOST .. ":" .. PROXY_PORT,
+			["pid-file"]				= PROXY_PIDFILE,
+			["proxy-lua-script"]		= second_lua_script or DEFAULT_SCRIPT_FILENAME,
+			["plugin-dir"]			= PROXY_LIBPATH,
+			["basedir"]					= PROXY_TEST_BASEDIR,
+			["log-level"]			= (VERBOSE == 3) and "debug" or "critical",
+	}
+	start_proxy('second_proxy',second_proxy_options) 
+end
+
+---
+-- ps_proxy()
+--
+-- starts proxy instances, with the admin options and ps-protocal 
+--
+--   client -> proxy -> backend_proxy -> [ mysql-backend ]
+--
+-- in case you want to start several backend_proxies, just provide a array
+-- as first param
+--
+-- @param proxy_lua_script
+-- @param proxy_options
+function start_ps_proxy (proxy_lua_script, proxy_options)
+	local DEFAULT_PS_SCRIPT_FILENAME = './rw-splitting-conn-simple.lua'
+	if default_proxy_options['proxy-lua-script'] and 
+		default_proxy_options['proxy-lua-script'] ~= DEFAULT_SCRIPT_FILENAME then
+		DEFAULT_PS_SCRIPT_FILENAME = default_proxy_options['proxy-lua-script']
+	end
+
+	-- Init Options.
+	local ps_proxy_options = {
 			["proxy-backend-addresses"] = MYSQL_HOST .. ":" .. MYSQL_PORT,
 			["proxy-read-only-backend-addresses"] = MYSQL_RO_HOST .. ":" .. MYSQL_RO_PORT,
 			["proxy-address"]		   	= PROXY_HOST .. ":" .. PROXY_PORT,
 			["pid-file"]				= PROXY_PIDFILE,
-			["proxy-lua-script"]		= second_lua_script or DEFAULT_SCRIPT_FILENAME,
+			["proxy-lua-script"]		= proxy_lua_script or DEFAULT_PS_SCRIPT_FILENAME,
 			["plugin-dir"]			= PROXY_LIBPATH,
             ["plugins"]			        = {"proxy","admin"},
 			["admin-username"]		    = "root",
 			["admin-password"]			= "password",
 			["admin-lua-script"]   	    = PROXY_LUAPATH,
+			["admin-address"]		   	= PROXY_HOST .. ":" .. ADMIN_PORT,
 			["basedir"]					= PROXY_TEST_BASEDIR,
 			["log-level"]			= (VERBOSE == 3) and "debug" or "message",
 			["log-file"]			= PROXY_LOG_FILE or "proxy.log",
 	}
-	start_proxy('second_proxy',second_proxy_options) 
+	
+	-- Load user defined options.
+	-- If use want to disable one option in default , just set it to string "nil"
+	if type(proxy_options) == "table" then
+		for k,v in pairs(proxy_options) do
+			if v == "nil" then
+				ps_proxy_options[k] = nil
+			else
+				ps_proxy_options[k] = v
+			end
+		end
+	end
+	
+	start_proxy('rwsplit_ps_proxy',ps_proxy_options) 
 end
 
 local num_tests	 	= 0
@@ -771,6 +882,15 @@ local all_ok		= true
 local failed_test   = {}
 
 file_empty(DEFAULT_SCRIPT_FILENAME)
+
+have_modified_mysqltest = false
+local fpipe = io.popen('echo -n "temp_disable_ps_protocol;" | '.. MYSQL_TEST_BIN ..' 2>&1')
+local fline = fpipe:read('*a')
+if not fline:match("error in your SQL syntax") then
+	have_modified_mysqltest = true
+end
+
+print('You ' .. (have_modified_mysqltest and "" or "don't ") .. 'have modified mysqltest installed!')
 
 --
 -- if we have a argument, exectute the named test

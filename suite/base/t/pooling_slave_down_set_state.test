@@ -34,17 +34,25 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
 temp_disable_ps_protocol;
-#create connection for administration
 
+#create connection for administration
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+SELECT * FROM backends;
 
 # Init connections for master to warm-up
 enable_ps_protocol;
+#create connections and test
+connect (conn1,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
 
-#create connection and test
+connect (conn2,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
 connect (conn3,$ip,$user,$pwd,,$port);
 use test;
 SELECT data from user where id = 3;
@@ -71,6 +79,7 @@ temp_disable_ps_protocol;
 connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+SELECT * FROM backends;
 
 # Keep on creating in order to connect to slave
 enable_ps_protocol;
@@ -94,106 +103,91 @@ connect (conn12,$ip,$user,$pwd,,$port);
 use test;
 SELECT data from user where id = 3;
 
+connect (conn13,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
+connect (conn14,$ip,$user,$pwd,,$port);
+use test;
+SELECT data from user where id = 3;
+
 temp_disable_ps_protocol;
 connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+SELECT * FROM backends;
 
-# Main connection 1
-enable_ps_protocol;
-connect (conn1,$ip,$user,$pwd,,$port);
-use test;
+--exec /bin/sh base/t/pooling_slave_down_set_state.sh stop $MYSQL_RO_HOST
+real_sleep 5;
+
 --disable_warnings
-DROP TABLE IF EXISTS user_ps_rw;
---enable_warnings
-
-CREATE TABLE user_ps_rw
-(
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `data` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO user_ps_rw VALUES (1, 'one');
-INSERT INTO user_ps_rw VALUES (2, 'two');
-
-real_sleep 0.5;
-
-# Main connection 2
 enable_ps_protocol;
-connect (conn2,$ip,$user,$pwd,,$port);
-#assume 0
+connection conn1;
+SELECT data from user where id = 3;
+connection conn2;
+SELECT data from user where id = 3;
+connection conn3;
+SELECT data from user where id = 3;
+connection conn4;
+SELECT data from user where id = 3;
+connection conn5;
+SELECT data from user where id = 3;
+connection conn6;
+SELECT data from user where id = 3;
+connection conn7;
+SELECT data from user where id = 3;
+connection conn8;
+SELECT data from user where id = 3;
+--disable_abort_on_error
+connection conn9;
+SELECT data from user where id = 3;
+connection conn10;
+SELECT data from user where id = 3;
+connection conn11;
+SELECT data from user where id = 3;
+connection conn12;
+SELECT data from user where id = 3;
+connection conn13;
+SELECT data from user where id = 3;
+connection conn14;
+SELECT data from user where id = 3;
+--enable_abort_on_error
+
+real_sleep 1;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+SELECT * FROM backends;
+
+enable_ps_protocol;
+connect (conn15,$ip,$user,$pwd,,$port);
 use test;
-SELECT data FROM user_ps_rw WHERE id=1;
-
-connection conn1;
-SELECT data FROM user WHERE id=3;
-
-# Free some master's connections
-disconnect conn3;
-disconnect conn4;
-disconnect conn5;
+SELECT data from user where id = 3;
 
 temp_disable_ps_protocol;
 connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+SELECT * FROM backends;
 
-enable_ps_protocol;
-connection conn2;
-#assume 1
-INSERT INTO user_ps_rw VALUES (3, 'three');
+--exec /bin/sh base/t/pooling_slave_down_set_state.sh start $MYSQL_RO_HOST
 
-connection conn1;
-SELECT data FROM user WHERE id=3;
-
-connection conn2;
-#assume 2
-SELECT data FROM user_ps_rw WHERE id=3; 
-
-connection conn1;
-SELECT data FROM user WHERE id=3;
-
-# Free some slave's connections
-disconnect conn11;
-disconnect conn12;
-
-temp_disable_ps_protocol;
-connection conn0;
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-eval select conn_num from backends where backend_ndx = 2 and user = "$user";
-
-enable_ps_protocol;
-connection conn2;
-#assume 3
-INSERT INTO user_ps_rw VALUES (4, 'four');
-
-connection conn1;
-SELECT data FROM user WHERE id=1;
-
-connection conn2;
-#assume 4
-UPDATE user_ps_rw SET data='one_p' WHERE id=1;
-SELECT id FROM user_ps_rw WHERE data='one_p';
-
-UPDATE user_ps_rw SET data='two_p' WHERE id=2;
-SELECT id FROM user_ps_rw WHERE data='two_p';
-
-connection conn1;
-SELECT * FROM user_ps_rw;
-
-DROP TABLE user_ps_rw;
-
+#clean up
 disconnect conn0;
 disconnect conn1;
 disconnect conn2;
-#disconnect conn3;
-#disconnect conn4;
-#disconnect conn5;
+disconnect conn3;
+disconnect conn4;
+disconnect conn5;
 disconnect conn6;
 disconnect conn7;
 disconnect conn8;
 disconnect conn9;
 disconnect conn10;
-#disconnect conn11;
-#disconnect conn12;
+disconnect conn11;
+disconnect conn12;
+disconnect conn13;
+disconnect conn14;
+disconnect conn15;

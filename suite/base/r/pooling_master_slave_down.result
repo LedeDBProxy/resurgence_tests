@@ -1,0 +1,39 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+update user set data=concat(data, "1") where id = 1;
+SELECT data from user where id = 2;
+data
+jyywb
+SELECT data from user where id = 3;
+data
+wb
+SELECT data from user where id = 4;
+data
+lazio
+SELECT data from user where id = 5;
+data
+connection_num
+0
+connection_num
+0
+update backends set state = "maintaining" where backend_ndx = 1;
+update backends set state = "maintaining" where backend_ndx = 2;
+update user set data=concat(data, "1") where id = 1;
+ERROR 07000: proxy stops serving requests now
+update user set data=concat(data, "1") where id = 2;
+ERROR 07000: proxy stops serving requests now
+SELECT data from user where id = 2;
+ERROR 07000: proxy stops serving requests now
+SELECT data from user where id = 3;
+ERROR 07000: proxy stops serving requests now
+SELECT data from user where id = 4;
+ERROR 07000: proxy stops serving requests now
+SELECT data from user where id = 5;
+ERROR 07000: proxy stops serving requests now
+ERROR HY000: (proxy) all backends are down
+ERROR HY000: (proxy) all backends are down
+connection_num
+0
+connection_num
+0

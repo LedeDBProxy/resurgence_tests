@@ -18,6 +18,8 @@
 # 
 #  $%ENDLICENSE%$
 #enable_connect_log;
+#  本测试用例用于测试管理接口增删改相关的backends的情况是否成功。
+#  注意，可能需要预先在shell的环境变量里设置这些相关的环境变量。
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -32,29 +34,36 @@ connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port);
 select * from backends;
 
 insert into backends values ('1.1.1.1:1111', 'rw', 'unkown');
-insert into backends values ('1.1.1.1', 'ro', 'maintaining');
+insert into backends values ("1.1.1.1", "ro", "maintaining");
 update backends set type = 'rw' where address = '1.1.1.1:3306';
-update backends set type = 'ro' where address = '1.1.1.1:1111';
+update backends set type = "ro" where address = "1.1.1.1:1111";
 select * from backends;
 update backends set state = 'maintaining' where address = '1.1.1.1:1111';
-update backends set state = 'unkown' where address = '1.1.1.1:3306';
+update backends set state = "unkown" where address = "1.1.1.1:3306";
 select * from backends;
 update backends set state = 'unkown' where backend_ndx = 3;
-update backends set state = 'maintaining' where backend_ndx = 2;
+update backends set state = "maintaining" where backend_ndx = 2;
 select * from backends;
 update backends set state = 'unkown', type = 'rw' where address = '1.1.1.1:1111';
-update backends set state = 'maintaining', type = 'ro' where address = '1.1.1.1:3306';
+update backends set type = 'ro', state = 'maintaining' where address = '1.1.1.1:3306';
+select * from backends;
+update backends set type="ro",state="maintaining" where address = "1.1.1.1:1111";
+update backends set state="unkown",type ="rw" where address = "1.1.1.1:3306";
 select * from backends;
 update backends set type = 'ro';
-update backends set state = 'maintaining';
+update backends set state = "maintaining";
 select * from backends;
 
+--disable_query_log
 --error 1105
 connect (conn1,$ip,$user,$pwd,,$port); 
+--enable_query_log
 
 
 connection conn0;
 update backends set state = 'unkown';
+select * from backends;
+
 
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;

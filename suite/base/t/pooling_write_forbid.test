@@ -20,6 +20,9 @@
 #  测试用例的目的：
 #      主库被删除后，检测写操作是否会发送给读服务器
 
+
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -29,11 +32,13 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
 temp_disable_ps_protocol;
+#create connection for administration
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 enable_ps_protocol;
+#create connection for test
 connect (conn1,$ip,$user,$pwd,,$port); 
 connect (conn2,$ip,$user,$pwd,,$port); 
 connect (conn3,$ip,$user,$pwd,,$port); 
@@ -42,6 +47,7 @@ connect (conn5,$ip,$user,$pwd,,$port);
 
 real_sleep 2;
 
+#start test
 connection conn1;
 use test;
 set @a=3;

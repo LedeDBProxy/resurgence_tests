@@ -20,6 +20,9 @@
 #  测试用例的目的：
 #     随机性测试，用来测试非prepare连接,在正常情况下的连接复用情况
 #
+
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -29,9 +32,13 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
 temp_disable_ps_protocol;
+#create connection for administration
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+
+#create connection and test
+
 
 connect (conn1,$ip,$user,$pwd,,$port); 
 character_set utf8;

@@ -1,0 +1,30 @@
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+1
+update user set data=concat(data, "1") where id = 1;
+update user set data=concat(data, "1") where id = 2;
+update user set data=concat(data, "2") where id = 1;
+update user set data=concat(data, "2") where id = 2;
+update user set data=concat(data, "3") where id = 1;
+update user set data=concat(data, "3") where id = 2;
+update user set data=concat(data, "4") where id = 1;
+update user set data=concat(data, "4") where id = 2;
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	127.0.0.1:3306	up	rw	NULL	5
+2	10.110.12.193:3306	unknown	ro	NULL	0
+mysql stop/waiting
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	127.0.0.1:3306	up	rw	NULL	5
+2	10.110.12.193:3306	unknown	ro	NULL	0
+update user set data="1ccc" where id = 1;
+ERROR HY000: Lost connection to MySQL server during query
+update user set data="1jyywbvfeqvf" where id = 2;
+ERROR HY000: Lost connection to MySQL server during query
+update user set data="6ccc" where id = 1;
+ERROR HY000: Lost connection to MySQL server during query
+select * from backends;
+backend_ndx	address	state	type	uuid	connected_clients
+1	127.0.0.1:3306	down	rw	NULL	4
+2	10.110.12.193:3306	up	ro	NULL	0

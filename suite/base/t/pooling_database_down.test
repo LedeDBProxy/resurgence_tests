@@ -17,11 +17,10 @@
 #  02110-1301  USA
 # 
 #  $%ENDLICENSE%$
-#  测试用例的目的：
-#      当从库崩溃后，测试系统是否支持能够正常读写操作
 
 
-#set up parametes
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -31,90 +30,91 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 let $default_db= $DEFAULT_DB;
 
-temp_disable_ps_protocol;
-
 #create connection for administration
+
+temp_disable_ps_protocol;
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+#eval select conn_num from backends where backend_ndx = 2 and user = "$user";
 
 enable_ps_protocol;
+#create connections for test
 
-#create connection for test
 connect (conn1,$ip,$user,$pwd,$default_db,$port); 
 connect (conn2,$ip,$user,$pwd,$default_db,$port); 
 connect (conn3,$ip,$user,$pwd,$default_db,$port); 
 connect (conn4,$ip,$user,$pwd,$default_db,$port); 
 connect (conn5,$ip,$user,$pwd,$default_db,$port); 
 
+
 real_sleep 2;
+
 #start test
+#connect to master
 connection conn1;
-update user set data="Hello world" where id = 1;
-update user set data="jyywb" where id = 2;
+let $old_data =query_get_value(select data from user where id = 1, data, 1);
+let $old_data_2 =query_get_value(select data from user where id = 2, data, 1);
+update user set data=concat(data, "1") where id = 1;
+update user set data=concat(data, "1") where id = 2;
 
 connection conn2;
-SELECT data from user where id = 2;
-
+update user set data=concat(data, "2") where id = 1;
+update user set data=concat(data, "2") where id = 2;
 
 connection conn3;
-SELECT data from user where id = 3;
+update user set data=concat(data, "3") where id = 1;
+update user set data=concat(data, "3") where id = 2;
 
 connection conn4;
-SELECT data from user where id = 4;
+update user set data=concat(data, "4") where id = 1;
+update user set data=concat(data, "4") where id = 2;
 
 connection conn5;
-SELECT data from user where id = 5;
-
-connect (conn6,$ip,$user,$pwd,$default_db,$port); 
-SELECT data from user where id = 6;
-
-connect (conn7,$ip,$user,$pwd,$default_db,$port); 
-SELECT data from user where id = 7;
-
-connect (conn8,$ip,$user,$pwd,$default_db,$port); 
-SELECT data from user where id = 8;
-
-connect (conn9,$ip,$user,$pwd,$default_db,$port); 
-SELECT data from user where id = 9;
-
-connect (conn10,$ip,$user,$pwd,$default_db,$port); 
-SELECT data from user where id = 10;
+--disable_query_log
+eval update user set data="$old_data" where id = 1;
+eval update user set data="$old_data_2" where id = 2;
+--enable_query_log
 
 temp_disable_ps_protocol;
 
 real_sleep 0.5;
 
 connection conn0;
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+#eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+select * from backends;
 
-update backends set state = "maintaining" where backend_ndx = 2;
+
+#stop mysql and check connections
+exec service mysql stop;
+
+select * from backends;
+
 
 enable_ps_protocol;
-connect (conn11,$ip,$user,$pwd,$default_db,$port); 
-SELECT data from user where id = 11;
+#--error 1105
+connection conn1;
+--error 2013
+update user set data=concat(data, "1") where id = 1;
+--error 2013
+update user set data=concat(data, "1") where id = 2;
 
-real_sleep 0.5;
-connection conn10;
---error 1105
-SELECT data from user where id = 2;
-
-disconnect conn7;
-real_sleep 0.5;
-
-temp_disable_ps_protocol;
-connection conn0;
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-eval select conn_num from backends where backend_ndx = 2 and user = "$user";
-
-enable_ps_protocol;
-connection conn10;
-SELECT data from user where id = 2;
+connect (conn6,$ip,$user,$pwd,$default_db,$port);
+--error 2013
+update user set data=concat(data, "6") where id = 1;
 
 temp_disable_ps_protocol;
+
 real_sleep 0.5;
+
 connection conn0;
-eval select conn_num from backends where backend_ndx = 1 and user = "$user";
-eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+#eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+select * from backends;
+
+#clean up
 
 disconnect conn0;
+disconnect conn1;
+disconnect conn2;
+disconnect conn3;
+disconnect conn4;
+disconnect conn5;

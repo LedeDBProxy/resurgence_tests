@@ -20,6 +20,9 @@
 #  测试用例的目的：
 #      当连接数超过max最大连接数的时候，是否能够以短连接的方式来运作
 
+
+#set up parameters
+
 let $ip= $PROXY_HOST;
 let $admin_ip= $PROXY_HOST;
 let $port= $PROXY_PORT;
@@ -29,11 +32,14 @@ let $pwd= $MYSQL_PASSWORD;
 let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
 
 temp_disable_ps_protocol;
+#create connection for administration
+
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 #assume 1
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 enable_ps_protocol;
+#create connection for test
 connect (conn6,$ip,$user,$pwd,,$port); 
 connect (conn7,$ip,$user,$pwd,,$port); 
 connect (conn8,$ip,$user,$pwd,,$port); 
@@ -41,7 +47,7 @@ connect (conn9,$ip,$user,$pwd,,$port);
 connect (conn10,$ip,$user,$pwd,,$port); 
 
 real_sleep 0.5;
-
+#start test
 connection conn6;
 use test;
 set @a=3;
