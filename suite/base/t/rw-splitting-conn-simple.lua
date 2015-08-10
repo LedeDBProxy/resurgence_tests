@@ -127,6 +127,9 @@ function connect_server()
             end
 
             local max_init_time = proxy.global.config.rwsplit.max_init_time
+            if max_init_time <= 0 then
+                max_init_time = 1
+            end
             if init_time == 0 then
                 init_time = 1
             elseif init_time > max_init_time then
@@ -175,6 +178,7 @@ function connect_server()
             print("  [".. i .."].state = " .. s.state)
         end
 
+
         -- prefer connections to the master 
         if s.type == proxy.BACKEND_TYPE_RW and
             (s.state == proxy.BACKEND_STATE_UP or
@@ -188,8 +192,8 @@ function connect_server()
             s.state == proxy.BACKEND_STATE_UNKNOWN) and
             ((cur_idle < min_idle_conns and connected_clients < max_idle_conns)
             or cur_idle > 0) then
-            is_backend_conn_keepalive = true
             proxy.connection.backend_ndx = i
+            is_backend_conn_keepalive = true
             break
         elseif s.type == proxy.BACKEND_TYPE_RW and
             (s.state == proxy.BACKEND_STATE_UP or
@@ -245,7 +249,6 @@ function connect_server()
         if is_debug then
         	print("  using pooled connection from: " .. proxy.connection.backend_ndx)
         end
-
         local backend_state = proxy.global.backends[proxy.connection.backend_ndx].state
         if backend_state == proxy.BACKEND_STATE_UP then
             use_pool_conn = true
@@ -335,7 +338,6 @@ function read_query( packet )
 
     if backend_ndx > 0 then
         local b = proxy.global.backends[backend_ndx]
-
         if b.type == proxy.BACKEND_TYPE_RO then
             ro_server = true
         end
@@ -394,8 +396,8 @@ function read_query( packet )
         end
     end
 
-    if (cmd.type == proxy.COM_QUIT) then
-        if backend_ndx <=0 or (is_backend_conn_keepalive and not is_in_transaction) then
+    if cmd.type == proxy.COM_QUIT then
+        if backend_ndx <= 0 or (is_backend_conn_keepalive and not is_in_transaction) then
             -- don't send COM_QUIT to the backend. We manage the connection
             -- in all aspects.
             -- proxy.response = {
@@ -564,23 +566,23 @@ function read_query( packet )
                 end
             end
 
-            if stmt.token_name == "TK_SQL_USE" or stmt.token_name == "TK_SQL_SET"
-                or stmt.token_name == "TK_SQL_SHOW"
-                or stmt.token_name == "TK_SQL_DESC" or stmt.token_name == "TK_SQL_EXPLAIN" then
+            if stmt.token_name == "TK_SQL_USE" or stmt.token_name == "TK_SQL_SET" or
+                stmt.token_name == "TK_SQL_SHOW" or stmt.token_name == "TK_SQL_DESC"
+                or stmt.token_name == "TK_SQL_EXPLAIN" then
                 rw_op = false
                 local ro_backend_ndx = lb.idle_ro()
                 if ro_backend_ndx > 0 then
                     backend_ndx = ro_backend_ndx
                     proxy.connection.backend_ndx = backend_ndx
 
+                    if stmt.token_name == "TK_SQL_USE" then
+                        local token_len = #tokens
+                        if token_len  > 1 then
+                            c.default_db = tokens[2].text
+                        end
+                    end
                     if is_debug then
                         print("  [2,use ro server: " .. backend_ndx .. "]")
-                    end
-                end
-                if stmt.token_name == "TK_SQL_USE" then
-                    local token_len = #tokens
-                    if token_len  > 1 then
-                        c.default_db = tokens[2].text
                     end
                 end
             end
@@ -992,6 +994,7 @@ function read_query_result( inj )
     if not is_backend_conn_keepalive then
         proxy.connection.to_be_closed_after_serve_req = true
     end
+
     if inj.id ~= 1 and inj.id ~= 3 and inj.id ~= 4 then
         -- ignore the result of the USE <default_db>
         -- the DB might not exist on the backend, what do do ?
