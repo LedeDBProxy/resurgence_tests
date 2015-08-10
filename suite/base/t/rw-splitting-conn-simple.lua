@@ -246,7 +246,7 @@ function connect_server()
         	print("  using pooled connection from: " .. proxy.connection.backend_ndx)
         end
 
-        local back_state = proxy.global.backends[proxy.connection.backend_ndx].state
+        local backend_state = proxy.global.backends[proxy.connection.backend_ndx].state
         if backend_state == proxy.BACKEND_STATE_UP then
             use_pool_conn = true
             -- stay with it
