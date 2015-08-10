@@ -1,0 +1,53 @@
+let $ip=$PROXY_HOST;                                                                                      
+let $user=$MYSQL_USER;                                                                                         
+let $pwd=$MYSQL_PASSWORD;                                                                                      
+let $db=$DEFAULT_DB;                                                                                           
+let $port=$PROXY_PORT;                                                                                         
+let $admin_port= $PROXY_ADMIN_PORT;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+                                                                                                        
+connect (conn1,$ip,$user,$pwd,$db,$port);                                                               
+sleep 1;                                                                                                
+--disable_query_log
+--disable_abort_on_error
+drop table c_t1;
+create table c_t1 (a int not null, b varchar(255), primary key(a));
+insert into c_t1 values (1,'1');
+--enable_abort_on_error
+--enable_query_log
+update c_t1 set b = '1' where a = 1;                                                                    
+sleep 1;                                                                                                
+connect (conn2,$ip,$user,$pwd,$db,$port);                                                               
+select b from c_t1 where a = 1;                                                                         
+sleep 1;                                                                                                
+connect (conn3,$ip,$user,$pwd,$db,$port);                                                               
+select b from c_t1 where a = 1;                                                                         
+sleep 1;                                                                                                
+connect (conn4,$ip,$user,$pwd,$db,$port);                                                               
+update c_t1 set b = '4' where a = 1;                                                                    
+connect (conn5,$ip,$user,$pwd,$db,$port);                                                               
+select b from c_t1 where a = 1;                                                                         
+connect (conn6,$ip,$user,$pwd,$db,$port);                                                               
+update c_t1 set b = '6' where a = 1;                                                                    
+connect (conn7,$ip,$user,$pwd,$db,$port);                                                               
+select b from c_t1 where a = 1;                                                                         
+connect (conn8,$ip,$user,$pwd,$db,$port);                                                               
+update c_t1 set b = '8' where a = 1;                                                                    
+connect (conn9,$ip,$user,$pwd,$db,$port);                                                               
+select b from c_t1 where a = 1;                                                                         
+connect (conn10,$ip,$user,$pwd,$db,$port);                                                               
+update c_t1 set b = '10' where a = 1;                                                                    
+connect (conn11,$ip,$user,$pwd,$db,$port);                                                               
+select b from c_t1 where a = 1;                                                                                                              
+
+connect (connadmin,$ip,$user,$proxy_admin_pwd,,$admin_port); 
+update backends set state='maintaining' where backend_ndx = 1;                                          
+update backends set state='unkown' where backend_ndx = 1;                                               
+                                                                                                        
+sleep 1;                                                                                                
+connect (conn12,$ip,$user,$pwd,$db,$port);                                                               
+update c_t1 set b = '12' where a = 1;                                                                    
+connect (conn13,$ip,$user,$pwd,$db,$port);                                                               
+select b from c_t1 where a = 1;                                                                         
+connect (conn14,$ip,$user,$pwd,$db,$port);                                                               
+select b from c_t1 where a = 1;      

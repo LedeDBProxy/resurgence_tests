@@ -1,0 +1,32 @@
+update c_t1 set b = '1' where a = 1;
+select b from c_t1 where a = 1;
+b
+1
+select b from c_t1 where a = 1;
+b
+1
+update c_t1 set b = '4' where a = 1;
+select b from c_t1 where a = 1;
+b
+4
+update c_t1 set b = '6' where a = 1;
+select b from c_t1 where a = 1;
+b
+6
+update c_t1 set b = '8' where a = 1;
+select b from c_t1 where a = 1;
+b
+8
+update c_t1 set b = '10' where a = 1;
+select b from c_t1 where a = 1;
+b
+10
+update backends set state='maintaining' where backend_ndx = 1;
+update backends set state='unkown' where backend_ndx = 1;
+update c_t1 set b = '12' where a = 1;
+select b from c_t1 where a = 1;
+b
+12
+select b from c_t1 where a = 1;
+b
+12
