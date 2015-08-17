@@ -1,0 +1,12 @@
+set warm up where backend_ndx = 1 and user = "root";
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+8
+set warm up where backend_ndx = 2 and user = "root";
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+8
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+8
+set warm up over;
