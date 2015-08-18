@@ -33,24 +33,25 @@ disable_ps_protocol;
 
 connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port); 
 eval set warm up where backend_ndx = 1 and user = "$user";
-connect (conn1,$ip,$user,$pwd,$default_db,$port); 
-connect (conn2,$ip,$user,$pwd,$default_db,$port); 
-connect (conn3,$ip,$user,$pwd,$default_db,$port); 
-connect (conn4,$ip,$user,$pwd,$default_db,$port); 
-connect (conn5,$ip,$user,$pwd,$default_db,$port); 
-connect (conn6,$ip,$user,$pwd,$default_db,$port); 
-connect (conn7,$ip,$user,$pwd,$default_db,$port); 
+let $count = 1;
+while($count < 8) 
+{
+    let $conn_name = conn$count;
+    connect ($conn_name,$ip,$user,$pwd,$default_db,$port); 
+    inc $count;
+}
+
+
 connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 eval set warm up where backend_ndx = 2 and user = "$user";
-connect (conn8,$ip,$user,$pwd,$default_db,$port); 
-connect (conn9,$ip,$user,$pwd,$default_db,$port); 
-connect (conn10,$ip,$user,$pwd,$default_db,$port); 
-connect (conn11,$ip,$user,$pwd,$default_db,$port); 
-connect (conn12,$ip,$user,$pwd,$default_db,$port); 
-connect (conn13,$ip,$user,$pwd,$default_db,$port); 
-connect (conn14,$ip,$user,$pwd,$default_db,$port); 
-connect (conn15,$ip,$user,$pwd,$default_db,$port); 
+let $count = 8;
+while($count < 16) 
+{
+    let $conn_name = conn$count;
+    connect ($conn_name,$ip,$user,$pwd,$default_db,$port); 
+    inc $count;
+}
 
 connection conn0;
 eval select conn_num from backends where backend_ndx = 1 and user = "$user";
