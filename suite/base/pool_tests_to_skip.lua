@@ -34,6 +34,7 @@ tests_to_skip = {
 	['pooling_slave_down_set_state'] = 'real backends need.',
 	['pooling_database_down'] = 'real local backends and root need.',
     ['overlong'] = 'cast a lot of time',
+    ['pooling'] = 'skip warn up test case(sharding)',
 }
 
 local build_os = os.getenv("BUILD_OS")
