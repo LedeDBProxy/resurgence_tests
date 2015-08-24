@@ -113,7 +113,7 @@ connection_num
 use test;
 SELECT data from user where id = 4;
 data
-wbb
+lazio
 use test;
 SELECT data from user where id = 2;
 data
@@ -121,7 +121,7 @@ jyywb
 use test;
 SELECT data from user where id = 4;
 data
-wbb
+lazio
 use test;
 SELECT data from user where id = 4;
 data

@@ -78,6 +78,7 @@ character_set_results
 SET character_set_results = NULL;
 SELECT data from user where id = 9;
 data
+wb
 show variables where Variable_name regexp 'character_set_[cr]';
 Variable_name	Value
 character_set_client	utf8

@@ -42,7 +42,7 @@ use test;
 set @a=4;
 SELECT data from user where id = @a;
 data
-wbb
+lazio
 use test;
 set @a=5;
 SELECT data from user where id = @a;

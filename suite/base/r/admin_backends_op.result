@@ -75,4 +75,6 @@ delete from backends where address = '1.1.1.1:3306';
 select * from backends;
 backend_ndx	address	state	type	uuid	connected_clients
 1	127.0.0.1:40010	up	ro	NULL	1
-2	1.1.1.1:1111	unknown	ro	NULL	0
+2	127.0.0.1:40020	deleted	unknown	NULL	0
+3	1.1.1.1:1111	unknown	ro	NULL	0
+4	1.1.1.1:3306	deleted	unknown	NULL	0

@@ -52,6 +52,7 @@ lazio
 SET NAMES big5;
 SELECT data from user where id = 9;
 data
+wb
 SET NAMES utf8;
 SELECT data from user where id = 10;
 data
@@ -65,6 +66,7 @@ connection_num
 SET NAMES latin1;
 SELECT data from user where id = 11;
 data
+lazio
 SET NAMES utf8;
 SELECT data from user where id = 12;
 data
@@ -209,6 +211,7 @@ Variable_name	Value
 sql_mode	STRICT_TRANS_TABLES
 SELECT data from user where id = 9;
 data
+wb
 show variables where Variable_name regexp 'character_set_[cr]';
 Variable_name	Value
 character_set_client	big5
@@ -230,6 +233,7 @@ Variable_name	Value
 sql_mode	
 SELECT data from user where id = 11;
 data
+lazio
 show variables where Variable_name regexp 'character_set_[cr]';
 Variable_name	Value
 character_set_client	latin1

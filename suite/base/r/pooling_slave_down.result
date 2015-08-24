@@ -25,6 +25,7 @@ data
 lazio
 SELECT data from user where id = 9;
 data
+wb
 SELECT data from user where id = 10;
 data
 dog
