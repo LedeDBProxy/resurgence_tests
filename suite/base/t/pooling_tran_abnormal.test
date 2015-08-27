@@ -77,6 +77,8 @@ SELECT data from user where id = 2;
 set autocommit=0;
 update user set data="hello,wbjyy2" where id = 2;
 set autocommit=1;
+#wait master-slave-sync
+sleep 0.1;
 SELECT data from user where id = 2;
 
 connect (conn6,$ip,$user,$pwd,,$port); 
@@ -85,6 +87,8 @@ SELECT data from user where id = 2;
 set autocommit=0;
 update user set data="hello,wbjyy3" where id = 2;
 set autocommit=1;
+#wait master-slave-sync
+sleep 0.1;
 SELECT data from user where id = 2;
 
 connect (conn7,$ip,$user,$pwd,,$port); 
@@ -93,6 +97,8 @@ SELECT data from user where id = 2;
 set autocommit=0;
 update user set data="hello,wbjyy4" where id = 2;
 set autocommit=1;
+#wait master-slave-sync
+sleep 0.1;
 SELECT data from user where id = 2;
 
 connect (conn8,$ip,$user,$pwd,,$port); 
@@ -101,6 +107,8 @@ SELECT data from user where id = 2;
 set autocommit=0;
 update user set data="hello,wbjyy5" where id = 2;
 set autocommit=1;
+#wait master-slave-sync
+sleep 0.1;
 SELECT data from user where id = 2;
 
 connect (conn9,$ip,$user,$pwd,,$port); 
@@ -110,6 +118,8 @@ set autocommit=0;
 --disable_abort_on_error
 update user set data="hello,wbjyy6" where id = 2;
 set autocommit=1;
+#wait master-slave-sync
+sleep 0.1;
 SELECT data from user where id = 2;
 
 enable_abort_on_error;

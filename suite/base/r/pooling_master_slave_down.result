@@ -14,7 +14,7 @@ lazio
 SELECT data from user where id = 5;
 data
 connection_num
-0
+1
 connection_num
 0
 update backends set state = "maintaining" where backend_ndx = 1;
@@ -34,6 +34,6 @@ ERROR 07000: proxy stops serving requests now
 ERROR HY000: (proxy) all backends are down
 ERROR HY000: (proxy) all backends are down
 connection_num
-0
+1
 connection_num
 0

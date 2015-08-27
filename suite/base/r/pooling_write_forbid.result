@@ -28,7 +28,7 @@ data
 jyywb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-5
+6
 delete from backends where backend_ndx = 1;
 use test;
 set @a=3;
@@ -37,7 +37,7 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-0
+6
 use test;
 set @a=4;
 SELECT data from user where id = @a;
@@ -49,7 +49,7 @@ SELECT data from user where id = @a;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-2
+6
 use test;
 set @a=4;
 SELECT data from user where id = @a;
@@ -83,4 +83,4 @@ update test set data="wbjyywb" where id = 5;
 ERROR 07000: 2, master connections are too small
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-11
+6

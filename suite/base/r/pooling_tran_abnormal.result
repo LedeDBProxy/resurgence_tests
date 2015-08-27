@@ -89,10 +89,10 @@ SELECT data from user where id = 2;
 ERROR HY000: Commands out of sync; you can't run this command now
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-0
+9
 select conn_num from backends where backend_ndx = 2 and user = "root";
 connection_num
-0
+1
 SELECT data from user where id = 2;
 data
 hello,wbjyy6
@@ -107,7 +107,7 @@ data
 jyywb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-3
+12
 select conn_num from backends where backend_ndx = 2 and user = "root";
 connection_num
-0
+1

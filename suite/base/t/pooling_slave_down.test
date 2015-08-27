@@ -96,7 +96,6 @@ SELECT data from user where id = 11;
 
 real_sleep 0.5;
 connection conn10;
---error 1105
 SELECT data from user where id = 2;
 
 disconnect conn7;

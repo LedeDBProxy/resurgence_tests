@@ -28,7 +28,7 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-0
+1
 use test;
 set @a=3;
 SELECT data from user where id = @a;
@@ -56,10 +56,10 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-0
+1
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-3
+4
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-8
+9

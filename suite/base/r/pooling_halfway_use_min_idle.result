@@ -116,7 +116,7 @@ data
 jyywb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-4
+13
 select conn_num from backends where backend_ndx = 2 and user = "root";
 connection_num
-0
+2
