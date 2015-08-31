@@ -178,7 +178,6 @@ function connect_server()
             print("  [".. i .."].state = " .. s.state)
         end
 
-
         -- prefer connections to the master 
         if s.type == proxy.BACKEND_TYPE_RW and
             (s.state == proxy.BACKEND_STATE_UP or
@@ -233,7 +232,19 @@ function connect_server()
         if is_debug then
         	print("  [" .. rw_ndx .. "] taking master as default")
         end
-        proxy.connection.backend_ndx = rw_ndx
+
+        if rw_ndx > 0 then
+            proxy.connection.backend_ndx = rw_ndx
+        else
+            if is_debug then 
+				print("connection will be rejected")
+			end
+            proxy.response = {
+				type = proxy.MYSQLD_PACKET_ERR,
+				errmsg = "rw ndx is zero"
+			}
+			return proxy.PROXY_SEND_RESULT
+        end
     else
         is_backend_conn_keepalive = true
     end
@@ -252,6 +263,9 @@ function connect_server()
         local backend_state = proxy.global.backends[proxy.connection.backend_ndx].state
         if backend_state == proxy.BACKEND_STATE_UP then
             use_pool_conn = true
+            if cur_idle > max_idle_conns then
+                is_backend_conn_keepalive = false
+            end
             -- stay with it
             return proxy.PROXY_IGNORE_RESULT
         end
@@ -341,14 +355,8 @@ function read_query( packet )
         if b.type == proxy.BACKEND_TYPE_RO then
             ro_server = true
         end
-        if is_debug then
-            print("  backend state:" .. b.state)
-        end
-        if b.state ~= proxy.BACKEND_STATE_UP then
-            if is_debug then
-                print("  server already down")
-            end
 
+        if b.state ~= proxy.BACKEND_STATE_UP then
             if ro_server == true then
                 local rw_backend_ndx = lb.idle_failsafe_rw()
                 if rw_backend_ndx > 0 then
@@ -566,9 +574,9 @@ function read_query( packet )
                 end
             end
 
-            if stmt.token_name == "TK_SQL_USE" or stmt.token_name == "TK_SQL_SET" or
+            if is_auto_commit and (stmt.token_name == "TK_SQL_USE" or stmt.token_name == "TK_SQL_SET" or
                 stmt.token_name == "TK_SQL_SHOW" or stmt.token_name == "TK_SQL_DESC"
-                or stmt.token_name == "TK_SQL_EXPLAIN" then
+                or stmt.token_name == "TK_SQL_EXPLAIN") then
                 rw_op = false
                 local ro_backend_ndx = lb.idle_ro()
                 if ro_backend_ndx > 0 then
@@ -749,9 +757,6 @@ function read_query( packet )
         proxy.queries:append(1, packet, { resultset_is_needed = true })
         if cmd.type == proxy.COM_STMT_CLOSE and is_in_transaction then
             proxy.connection.is_still_in_trans = true
-            if is_debug then
-                print("    set is_still_in_trans true")
-            end
         end
     end
 
@@ -775,9 +780,9 @@ function read_query( packet )
     if is_debug then
         print("    cmd type:" .. cmd.type)
         if conn_reserved then
-            print("    connection reserved")
+            print(" connection reserved")
         else
-            print("    connection not reserved")
+            print(" connection not reserved")
         end
     end
 
@@ -1028,15 +1033,11 @@ function read_query_result( inj )
                 if not is_auto_commit then
                     is_in_transaction = true
                     if is_debug then
-                        print("    set is_in_transaction true")
+                        print("   set is_in_transaction true")
                     end
                 else
                     if not is_prepared then
                         proxy.connection.client.is_server_conn_reserved = false
-                    else
-                        if is_debug then
-                            print("    prepare stmt cnt:", proxy.connection.valid_prepare_stmt_cnt)
-                        end
                     end
                 end
             end
@@ -1054,14 +1055,6 @@ function read_query_result( inj )
                 print("    change stmt id")
             end
             res.prepared_stmt_id = server_index
-        end
-    end
-
-    if is_debug then
-        if is_in_transaction == true then
-            print("    is_in_transaction still true")
-        else
-            print("    is_in_transaction false")
         end
     end
 end
@@ -1085,7 +1078,7 @@ function disconnect_client()
         if is_debug then
             print("  set connection_close true ")
             if is_in_transaction then
-                print("    is_in_transaction is still true") 
+                print(" is_in_transaction is still true") 
             end
         end
         proxy.connection.connection_close = true
@@ -1093,9 +1086,6 @@ function disconnect_client()
         -- make sure we are disconnection from the connection
         -- to move the connection into the pool
         proxy.connection.backend_ndx = 0
-        if is_debug then
-            print("  set backend_ndx zero")
-        end
     end
 
 end
