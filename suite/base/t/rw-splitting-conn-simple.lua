@@ -241,7 +241,7 @@ function connect_server()
 			end
             proxy.response = {
 				type = proxy.MYSQLD_PACKET_ERR,
-				errmsg = "rw ndx is zero"
+				errmsg = "(proxy) all backends are down"
 			}
 			return proxy.PROXY_SEND_RESULT
         end
@@ -263,7 +263,7 @@ function connect_server()
         local backend_state = proxy.global.backends[proxy.connection.backend_ndx].state
         if backend_state == proxy.BACKEND_STATE_UP then
             use_pool_conn = true
-            if cur_idle > max_idle_conns then
+            if cur_idle > (max_idle_conns + min_idle_conns) then
                 is_backend_conn_keepalive = false
             end
             -- stay with it
@@ -549,14 +549,7 @@ function read_query( packet )
                                             if is_debug then
                                                 print("  [set is_auto_commit false]" )
                                             end
-                                            if ro_server == true then
-                                                local rw_backend_ndx = lb.idle_failsafe_rw()
-                                                if rw_backend_ndx > 0 then
-                                                    backend_ndx = rw_backend_ndx
-                                                    proxy.connection.backend_ndx = backend_ndx
-                                                end
-                                            end
-                                            conn_reserved = true
+                                            rw_op = true
                                         else
                                             is_auto_commit = true
                                         end

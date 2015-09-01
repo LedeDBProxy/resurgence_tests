@@ -119,14 +119,6 @@ set autocommit=0;
 update user set data="hello,wbjyy6" where id = 2;
 set autocommit=1;
 
-real_sleep 0.1;
-connect (conn10,$ip,$user,$pwd,,$port); 
-use test;
-SELECT data from user where id = 2;
-set autocommit=0;
-update user set data="jyywb" where id = 2;
-set autocommit=1;
-
 real_sleep 1;
 
 temp_disable_ps_protocol;

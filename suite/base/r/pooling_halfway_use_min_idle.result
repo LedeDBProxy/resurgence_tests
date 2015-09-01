@@ -85,13 +85,6 @@ hello,wbjyy5
 set autocommit=0;
 update user set data="hello,wbjyy6" where id = 2;
 set autocommit=1;
-use test;
-SELECT data from user where id = 2;
-data
-hello,wbjyy6
-set autocommit=0;
-update user set data="jyywb" where id = 2;
-set autocommit=1;
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 0
@@ -119,4 +112,4 @@ connection_num
 13
 select conn_num from backends where backend_ndx = 2 and user = "root";
 connection_num
-2
+1

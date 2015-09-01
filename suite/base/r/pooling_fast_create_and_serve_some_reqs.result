@@ -28,7 +28,7 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-11
+10

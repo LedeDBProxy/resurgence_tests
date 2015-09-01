@@ -31,8 +31,8 @@ SELECT data from user where id = 4;
 ERROR 07000: proxy stops serving requests now
 SELECT data from user where id = 5;
 ERROR 07000: proxy stops serving requests now
-ERROR HY000: (proxy) all backends are down
-ERROR HY000: (proxy) all backends are down
+ERROR HY000: #07000(proxy) all backends are down
+ERROR HY000: #07000(proxy) all backends are down
 connection_num
 1
 connection_num

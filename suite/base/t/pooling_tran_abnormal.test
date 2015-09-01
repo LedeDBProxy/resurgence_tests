@@ -114,8 +114,8 @@ SELECT data from user where id = 2;
 connect (conn9,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;
-set autocommit=0;
 --disable_abort_on_error
+set autocommit=0;
 update user set data="hello,wbjyy6" where id = 2;
 set autocommit=1;
 #wait master-slave-sync

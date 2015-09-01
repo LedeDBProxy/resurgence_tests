@@ -3,14 +3,14 @@ connection_num
 1
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 begin;
 update user set data="Hello world" where id = 1;
 update user set data="jyywb" where id = 2;
 commit;
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 begin;
 SELECT data from user where id = 2;
 data
@@ -19,13 +19,13 @@ update user set data="jyywb2" where id = 2;
 rollback;
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 SELECT data from user where id = 2;
 data
 jyywb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 begin;
 SELECT data from user where id = 4;
 data
@@ -33,13 +33,13 @@ lazio
 rollback;
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 begin;
 SELECT data from user where id = 5;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 begin;
 SELECT data from user where id = 6;
 data
