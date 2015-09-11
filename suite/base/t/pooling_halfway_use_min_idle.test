@@ -48,7 +48,7 @@ update user set data="wbjyywb" where id = 2;
 set autocommit=1;
 SELECT data from user where id = 2;
 
-real_sleep 0.1;
+real_sleep 0.15;
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;
 set autocommit=0;
@@ -57,7 +57,7 @@ update user set data="wbjyy" where id = 2;
 set autocommit=1;
 SELECT data from user where id = 2;
 
-real_sleep 0.1;
+real_sleep 0.15;
 connect (conn3,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;
@@ -66,7 +66,7 @@ update user set data="wbjyywb" where id = 2;
 SELECT data from user where id = 2;
 set autocommit=1;
 
-real_sleep 0.1;
+real_sleep 0.15;
 connect (conn4,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;
@@ -75,7 +75,7 @@ update user set data="hello,wbjyy" where id = 2;
 set autocommit=1;
 SELECT data from user where id = 2;
 
-real_sleep 0.1;
+real_sleep 0.15;
 connect (conn5,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;
@@ -84,7 +84,7 @@ update user set data="hello,wbjyy2" where id = 2;
 set autocommit=1;
 SELECT data from user where id = 2;
 
-real_sleep 0.1;
+real_sleep 0.15;
 connect (conn6,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;
@@ -93,7 +93,7 @@ update user set data="hello,wbjyy3" where id = 2;
 set autocommit=1;
 SELECT data from user where id = 2;
 
-real_sleep 0.1;
+real_sleep 0.15;
 connect (conn7,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;
@@ -102,7 +102,7 @@ update user set data="hello,wbjyy4" where id = 2;
 set autocommit=1;
 SELECT data from user where id = 2;
 
-real_sleep 0.1;
+real_sleep 0.15;
 connect (conn8,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;
@@ -111,7 +111,7 @@ update user set data="hello,wbjyy5" where id = 2;
 set autocommit=1;
 SELECT data from user where id = 2;
 
-real_sleep 0.1;
+real_sleep 0.15;
 connect (conn9,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;
@@ -131,6 +131,7 @@ disconnect conn1;
 disconnect conn2;
 disconnect conn3;
 
+real_sleep 0.15;
 enable_ps_protocol;
 
 connect (conn13,$ip,$user,$pwd,$default_db,$port); 

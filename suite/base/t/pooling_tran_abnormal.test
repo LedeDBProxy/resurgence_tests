@@ -149,6 +149,8 @@ connect (conn11,$ip,$user,$pwd,$default_db,$port);
 update user set data="jyywb" where id = 2;
 SELECT data from user where id = 2;
 
+#wait master-slave-sync
+sleep 0.1;
 connect (conn12,$ip,$user,$pwd,,$port); 
 use test;
 SELECT data from user where id = 2;

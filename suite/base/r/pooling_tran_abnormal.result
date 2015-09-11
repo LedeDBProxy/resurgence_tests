@@ -105,7 +105,7 @@ jyywb
 use test;
 SELECT data from user where id = 2;
 data
-hello,wbjyy6
+jyywb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 9
