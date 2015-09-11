@@ -65,11 +65,10 @@ end
 -- read/write splitting sends all non-transactional SELECTs to the slaves
 --
 -- is_in_transaction tracks the state of the transactions
-local is_passed_but_req_rejected = false
-local is_in_transaction       = false
-local is_auto_commit          = true
-local is_prepared             = false
-local is_backend_conn_keepalive = true
+local is_in_transaction          = false
+local is_auto_commit             = true
+local is_prepared                = false
+local is_backend_conn_keepalive  = true
 local use_pool_conn = false
 local multiple_server_mode = false
 
@@ -125,7 +124,6 @@ function connect_server()
     local max_idle_conns = 0
     local min_idle_conns = 0
     local mid_idle_conns = 0
-    local init_phase = false
     local cur_idle = 0
     local connected_clients = 0
     local total_clients = 0
@@ -137,6 +135,7 @@ function connect_server()
     for i = 1, #proxy.global.backends do
         local s        = proxy.global.backends[i]
         local pool     = s.pool -- we don't have a username yet, try to find a connections which is idling
+        local init_phase = false
         cur_idle = pool.users[""].cur_idle_connections
         if testsuit then
 			local root_cur_idle = pool.users["root"].cur_idle_connections
@@ -249,17 +248,6 @@ function connect_server()
         end
     end
 
-    -- fuzzy check which is not accurate
-    if init_phase and total_available_conns < total_clients then
-        is_passed_but_req_rejected = true
-        if is_debug then
-            print("  total available conn:" .. total_available_conns .. ",total clients:" .. total_clients)
-            print("  is_passed_but_req_rejected set true")
-        end
-    else
-        is_passed_but_req_rejected = false
-    end
-
     if proxy.connection.backend_ndx == 0 then
         if is_debug then
         	print("  [" .. rw_ndx .. "] taking master as default")
@@ -351,14 +339,7 @@ end
 --- 
 -- read/write splitting
 function read_query( packet )
-    if is_passed_but_req_rejected then
-        proxy.response = {
-            type = proxy.MYSQLD_PACKET_ERR,
-            errmsg = "too many connections"
-        }
-        return proxy.PROXY_SEND_RESULT
-    end
-
+   
     local is_debug = proxy.global.config.rwsplit.is_debug
     local cmd      = commands.parse(packet)
     local c        = proxy.connection.client
@@ -541,7 +522,7 @@ function read_query( packet )
                 if is_backend_conn_keepalive then
                     rw_op = false
                     local ro_backend_ndx = lb.idle_ro()
-                    if ro_backend_ndx > 0 then
+                    if backend_ndx ~= ro_backend_ndx and ro_backend_ndx > 0 then
                         backend_ndx = ro_backend_ndx
                         proxy.connection.backend_ndx = backend_ndx
 
@@ -550,7 +531,6 @@ function read_query( packet )
                         end
                     end
                 end
-
             else
                 -- only support last insert id in non transaction environment
                 local last_insert_id = proxy.connection.last_insert_id
@@ -622,7 +602,7 @@ function read_query( packet )
                 or stmt.token_name == "TK_SQL_EXPLAIN") then
                 rw_op = false
                 local ro_backend_ndx = lb.idle_ro()
-                if ro_backend_ndx > 0 then
+                if backend_ndx ~= ro_backend_ndx and ro_backend_ndx > 0 then
                     backend_ndx = ro_backend_ndx
                     proxy.connection.backend_ndx = backend_ndx
 
@@ -725,7 +705,7 @@ function read_query( packet )
 
                     if is_backend_conn_keepalive and ps_cnt == 0 and session_read_only == 1 then
                         local ro_backend_ndx = lb.idle_ro()
-                        if ro_backend_ndx > 0 then
+                        if backend_ndx ~= ro_backend_ndx and ro_backend_ndx > 0 then
                             backend_ndx = ro_backend_ndx
                             proxy.connection.backend_ndx = backend_ndx
 
