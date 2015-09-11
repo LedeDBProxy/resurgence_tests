@@ -50,28 +50,23 @@ real_sleep 0.5;
 #start test
 connection conn6;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connection conn7;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connection conn8;
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 
 connection conn9;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connection conn10;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 temp_disable_ps_protocol;
 
@@ -83,28 +78,23 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 enable_ps_protocol;
 connect (conn1,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn3,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn4,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn5,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 temp_disable_ps_protocol;
 

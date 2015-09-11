@@ -48,23 +48,19 @@ connect (conn4,$ip,$user,$pwd,,$port);
 
 connection conn1;
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 
 connection conn2;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connection conn3;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connection conn4;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connection conn0;
 #assume 1

@@ -50,29 +50,24 @@ real_sleep 2;
 #start test
 connection conn1;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connection conn2;
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 
 
 connection conn3;
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 
 connection conn4;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connection conn5;
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 
 disable_ps_protocol;
 
@@ -88,8 +83,7 @@ delete from backends where backend_ndx = 1;
 enable_ps_protocol;
 connect (conn11,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 temp_disable_ps_protocol;
 real_sleep 0.5;
@@ -100,12 +94,10 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 enable_ps_protocol;
 connect (conn12,$ip,$user,$pwd,,$port); 
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 connect (conn13,$ip,$user,$pwd,,$port); 
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 disconnect conn12;
 disconnect conn13;
 
@@ -118,32 +110,25 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 disable_ps_protocol;
 connect (conn21,$ip,$user,$pwd,,$port); 
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 connect (conn22,$ip,$user,$pwd,,$port); 
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 connect (conn23,$ip,$user,$pwd,,$port); 
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 connect (conn24,$ip,$user,$pwd,,$port); 
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 connect (conn25,$ip,$user,$pwd,,$port); 
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 connect (conn26,$ip,$user,$pwd,,$port); 
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 connect (conn27,$ip,$user,$pwd,,$port); 
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 connect (conn28,$ip,$user,$pwd,,$port); 
 use test;
 --error 1105

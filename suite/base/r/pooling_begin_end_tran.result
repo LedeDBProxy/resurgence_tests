@@ -39,7 +39,7 @@ SELECT data from user where id = 5;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-5
+4
 begin;
 SELECT data from user where id = 6;
 data
@@ -71,17 +71,19 @@ begin;
 SELECT data from user where id = 13;
 data
 begin;
+ERROR 07000: 2, master connections are too small
 SELECT data from user where id = 14;
 data
 begin;
+ERROR 07000: 2, master connections are too small
 SELECT data from user where id = 15;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-5
+0
 select conn_num from backends where backend_ndx = 2 and user = "root";
 connection_num
-0
+5
 rollback;
 rollback;
 rollback;
@@ -92,10 +94,12 @@ rollback;
 rollback;
 rollback;
 rollback;
+ERROR HY000: Lost connection to MySQL server during query
 rollback;
+ERROR HY000: Lost connection to MySQL server during query
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-16
+9
 select conn_num from backends where backend_ndx = 2 and user = "root";
 connection_num
-0
+5

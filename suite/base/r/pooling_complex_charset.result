@@ -111,7 +111,7 @@ character_set_connection	big5
 character_set_results	
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-12
+9
 SELECT data from user where id = 5;
 data
 show variables where Variable_name regexp 'character_set_[cr]';
@@ -208,4 +208,4 @@ character_set_connection	big5
 character_set_results	
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-12
+9

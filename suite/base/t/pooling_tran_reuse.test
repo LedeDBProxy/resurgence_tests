@@ -137,14 +137,23 @@ SELECT data from user where id = 2;
 update user set data="error,wbjyy" where id = 2;
 disconnect conn13;
 
+#wait master_slave sync
+sleep 0.1;
+
 connect (conn14,$ip,$user,$pwd,$default_db,$port); 
 SELECT data from user where id = 2;
 update user set data="error,wbjyy" where id = 2;
 disconnect conn14;
 
+#wait master_slave sync
+sleep 0.1;
+
 connect (conn11,$ip,$user,$pwd,$default_db,$port); 
 update user set data="jyywb" where id = 2;
 SELECT data from user where id = 2;
+
+#wait master_slave sync
+sleep 0.1;
 
 connect (conn12,$ip,$user,$pwd,$default_db,$port); 
 SELECT data from user where id = 2;

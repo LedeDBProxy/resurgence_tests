@@ -94,7 +94,7 @@ data
 jyywb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-13
+9
 set autocommit=0;
 update user set data="wbjyywb" where id = 199;
 SELECT data from user where id = 3;
@@ -151,7 +151,7 @@ SELECT data from user where id = 206;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-13
+1
 commit;
 set autocommit=1;
 commit;
@@ -170,7 +170,7 @@ commit;
 set autocommit=1;
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-13
+1
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-21
+9

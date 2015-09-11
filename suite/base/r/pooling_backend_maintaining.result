@@ -26,7 +26,7 @@ update backends set state='unkown' where backend_ndx = 1;
 update c_t1 set b = '12' where a = 1;
 select b from c_t1 where a = 1;
 b
-12
+10
 select b from c_t1 where a = 1;
 b
-12
+10

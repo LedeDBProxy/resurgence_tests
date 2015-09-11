@@ -40,28 +40,23 @@ enable_ps_protocol;
 #read
 connect (conn3,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn4,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn5,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn6,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn7,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 real_sleep 1;
 
@@ -73,28 +68,23 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 enable_ps_protocol;
 connect (conn8,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn9,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn10,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn11,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn12,$ip,$user,$pwd,,$port);
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 temp_disable_ps_protocol;
 #number of connections(10 read connections) on master and slaves
@@ -126,8 +116,7 @@ real_sleep 1;
 enable_ps_protocol;
 connect (conn2,$ip,$user,$pwd,,$port);
 use test;
-set @a=1;
-SELECT data FROM user_ps_rw WHERE id=@a;
+SELECT data FROM user_ps_rw WHERE id=1;
 
 real_sleep 1;
 connection conn1;

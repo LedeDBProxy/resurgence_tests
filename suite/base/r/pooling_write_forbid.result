@@ -2,85 +2,72 @@ select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 1
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
 wb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
 wb
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 delete from backends where backend_ndx = 1;
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
+data
+lazio
+use test;
+SELECT data from user where id = 4;
+data
+lazio
+use test;
+SELECT data from user where id = 5;
 data
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 data
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 data
 use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 data
 use test;
-set @a=5;
-SELECT data from user where id = @a;
-data
-use test;
-set @a=5;
-SELECT data from user where id = @a;
-data
-use test;
-set @a=5;
-SELECT data from user where id = @a;
+SELECT data from user where id = 5;
 data
 use test;
 update test set data="wbjyywb" where id = 5;
 ERROR 07000: 2, master connections are too small
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5

@@ -30,37 +30,30 @@ disable_ps_protocol;
 connect (conn1,$ip,$user,$pwd,,$port); 
 character_set utf8;
 use test;
-set @a=1;
 set autocommit=0;
-SELECT data from user where id = @a;
-set @a=2;
-SELECT data from user where id = @a;
-set @a=3;
-SELECT id, data from user where id = @a;
+SELECT data from user where id = 1;
+SELECT data from user where id = 2;
+SELECT id, data from user where id = 3;
 set autocommit=1;
 
 real_sleep 0.5;
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 
 real_sleep 0.5;
 connect (conn3,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn4,$ip,$user,$pwd,,$port);
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 
 real_sleep 0.5;
 connect (conn5,$ip,$user,$pwd,,$port);
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 
 real_sleep 0.5;
 temp_disable_ps_protocol;

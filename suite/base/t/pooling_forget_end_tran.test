@@ -43,13 +43,10 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 connect (conn1,$ip,$user,$pwd,,$port); 
 character_set utf8;
 use test;
-set @a=1;
 set autocommit=0;
-SELECT data from user where id = @a;
-set @a=2;
-SELECT data from user where id = @a;
-set @a=3;
-SELECT id, data from user where id = @a;
+SELECT data from user where id = 1;
+SELECT data from user where id = 2;
+SELECT id, data from user where id = 3;
 set autocommit=1;
 
 real_sleep 0.5;
@@ -60,20 +57,17 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 real_sleep 0.5;
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 
 real_sleep 0.5;
 connect (conn3,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 real_sleep 0.5;
 connect (conn4,$ip,$user,$pwd,,$port);
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 
 real_sleep 0.5;
 connection conn0;
@@ -83,8 +77,7 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 real_sleep 0.5;
 connect (conn5,$ip,$user,$pwd,,$port);
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 
 real_sleep 0.5;
 connection conn0;
@@ -94,8 +87,7 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 real_sleep 0.5;
 connect (conn6,$ip,$user,$pwd,,$port);
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 
 real_sleep 0.5;
 connection conn0;
@@ -104,23 +96,19 @@ eval select conn_num from backends where backend_ndx = 1 and user = "$user";
 
 connect (conn7,$ip,$user,$pwd,,$port);
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 
 connect (conn8,$ip,$user,$pwd,,$port);
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 
 connect (conn9,$ip,$user,$pwd,,$port);
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 
 connect (conn10,$ip,$user,$pwd,,$port);
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 
 real_sleep 0.5;
 connection conn0;

@@ -2,85 +2,72 @@ select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 1
 use test;
-set @a=1;
 set autocommit=0;
-SELECT data from user where id = @a;
+SELECT data from user where id = 1;
 data
 Hello world
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
-set @a=3;
-SELECT id, data from user where id = @a;
+SELECT id, data from user where id = 3;
 id	data
 3	wb
 rollback;
 set autocommit=1;
-set @a=4;
-SELECT id, data from user where id = @a;
+SELECT id, data from user where id = 4;
 id	data
 4	lazio
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 2
 use test;
-set @a=2;
-SELECT data from user where id = @a;
+SELECT data from user where id = 2;
 data
 jyywb
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 data
 wb
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 data
 lazio
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
 5
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-7
+5
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 data
 wb
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 data
 wb
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 data
 wb
 use test;
-set @a=6;
-SELECT data from user where id = @a;
+SELECT data from user where id = 6;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-11
+5
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-11
+5

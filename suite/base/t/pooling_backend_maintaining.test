@@ -25,18 +25,26 @@ select b from c_t1 where a = 1;
 sleep 1;                                                                                                
 connect (conn4,$ip,$user,$pwd,$db,$port);                                                               
 update c_t1 set b = '4' where a = 1;                                                                    
+#wait master-slave sync
+sleep 0.1;
 connect (conn5,$ip,$user,$pwd,$db,$port);                                                               
 select b from c_t1 where a = 1;                                                                         
 connect (conn6,$ip,$user,$pwd,$db,$port);                                                               
 update c_t1 set b = '6' where a = 1;                                                                    
+#wait master-slave sync
+sleep 0.1;
 connect (conn7,$ip,$user,$pwd,$db,$port);                                                               
 select b from c_t1 where a = 1;                                                                         
 connect (conn8,$ip,$user,$pwd,$db,$port);                                                               
 update c_t1 set b = '8' where a = 1;                                                                    
+#wait master-slave sync
+sleep 0.1;
 connect (conn9,$ip,$user,$pwd,$db,$port);                                                               
 select b from c_t1 where a = 1;                                                                         
 connect (conn10,$ip,$user,$pwd,$db,$port);                                                               
 update c_t1 set b = '10' where a = 1;                                                                    
+#wait master-slave sync
+sleep 0.1;
 connect (conn11,$ip,$user,$pwd,$db,$port);                                                               
 select b from c_t1 where a = 1;                                                                                                              
 

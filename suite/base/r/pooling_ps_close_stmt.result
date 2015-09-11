@@ -29,27 +29,27 @@ connection_num
 1
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 use test;
 SELECT data from user where id = 3;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-6
+5
 use test;
 SELECT data from user where id = 3;
 data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-7
+5
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-7
+5
 use test;
 SELECT data from user where id = 4;
 data
@@ -59,10 +59,10 @@ SELECT data from user where id = 5;
 data
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-9
+5
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-10
+5
 use test;
 SELECT data from user where id = 4;
 data
@@ -109,7 +109,7 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-20
+5
 use test;
 SELECT data from user where id = 4;
 data
@@ -156,4 +156,4 @@ data
 wb
 select conn_num from backends where backend_ndx = 1 and user = "root";
 connection_num
-32
+5

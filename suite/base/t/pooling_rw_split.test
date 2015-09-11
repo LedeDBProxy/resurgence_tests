@@ -42,13 +42,11 @@ enable_ps_protocol;
 
 connect (conn1,$ip,$user,$pwd,,$port); 
 use test;
-set @a=3;
-SELECT data from user where id = @a;
+SELECT data from user where id = 3;
 
 connect (conn2,$ip,$user,$pwd,,$port); 
 use test;
-set @a=4;
-SELECT data from user where id = @a;
+SELECT data from user where id = 4;
 
 connect (conn3,$ip,$user,$pwd,,$port); 
 use test;
