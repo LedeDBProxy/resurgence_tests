@@ -24,7 +24,7 @@ ERROR 07000: proxy stops serving requests now
 update user set data=concat(data, "1") where id = 2;
 ERROR 07000: proxy stops serving requests now
 SELECT data from user where id = 2;
-ERROR 07000: 1,master connections are too small
+ERROR 07000: 1,master/slave connections are too small
 SELECT data from user where id = 3;
 ERROR 07000: proxy stops serving requests now
 SELECT data from user where id = 4;
