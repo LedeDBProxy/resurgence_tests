@@ -1,0 +1,124 @@
+DROP TABLE IF EXISTS t_insertid;
+CREATE TABLE t_insertid (
+`id` int(11) NOT NULL	AUTO_INCREMENT,
+`data` varchar(100) DEFAULT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO t_insertid (data) VALUES ('a');
+SELECT id FROM t_insertid;
+id
+1
+INSERT INTO t_insertid (data) VALUES ('b');
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+2
+INSERT INTO t_insertid (data) VALUES ('c');
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+3
+INSERT INTO t_insertid (data) VALUES ('d');
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+4
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+5
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+INSERT INTO t_insertid (data) VALUES ('e');
+INSERT INTO t_insertid (data) VALUES ('f');
+INSERT INTO t_insertid (data) VALUES ('g');
+INSERT INTO t_insertid (data) VALUES ('g');
+INSERT INTO t_insertid (data) VALUES ('h');
+INSERT INTO t_insertid (data) VALUES ('h');
+INSERT INTO t_insertid (data) VALUES ('i');
+INSERT INTO t_insertid (data) VALUES ('i');
+INSERT INTO t_insertid (data) VALUES ('i');
+INSERT INTO t_insertid (data) VALUES ('j');
+INSERT INTO t_insertid (data) VALUES ('j');
+INSERT INTO t_insertid (data) VALUES ('j');
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+5
+select @@last_insert_id;
+@@last_insert_id
+5
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+6
+select @@last_insert_id;
+@@last_insert_id
+6
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+8
+select @@last_insert_id;
+@@last_insert_id
+8
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+10
+select @@last_insert_id;
+@@last_insert_id
+10
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+13
+select @@last_insert_id;
+@@last_insert_id
+13
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+16
+select @@last_insert_id;
+@@last_insert_id
+16
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+7
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+4
+INSERT INTO t_insertid (data) VALUES ('k');
+SELECT id FROM t_insertid where data='k';
+id
+17
+SELECT LAST_INSERT_ID();
+LAST_INSERT_ID()
+17
+SELECT id FROM t_insertid where data='k';
+id
+17
+SELECT last_INSERT_ID();
+last_INSERT_ID()
+17
+SELECT id FROM t_insertid where data='k';
+id
+17
+SELECT @@last_insert_id;
+@@last_insert_id
+17
+SELECT id FROM t_insertid where data='k';
+id
+17
+SELECT @@LAST_insert_id;
+@@LAST_insert_id
+17
+INSERT INTO t_insertid (data) VALUES ('l');
+SELECT id FROM t_insertid where data='l';
+id
+18
+SELECT id, data FROM t_insertid where id=LAST_INSERT_ID();
+LAST_INSERT_ID()
+18
+SELECT id, data FROM t_insertid where id=@@last_insert_id;
+@@last_insert_id
+18
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+7
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+5
+DROP TABLE t_insertid;

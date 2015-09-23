@@ -559,17 +559,15 @@ function read_query( packet )
                 elseif not is_insert_id and token.token_name == "TK_LITERAL" then
                     local utext = token.text:upper()
 
-                    if utext == "LAST_INSERT_ID" or
-                        utext == "@@INSERT_ID" then
+                    if utext == "@@LAST_INSERT_ID" then
                         is_insert_id = true
-                        last_insert_id_name = utext
+                        last_insert_id_name = token.text
                     end
                 elseif not is_insert_id and token.token_name == "TK_FUNCTION" then
                     local utext = token.text:upper()
                     if utext == "LAST_INSERT_ID" then
                         is_insert_id = true
-                        utext = utext ..  "()"
-                        last_insert_id_name = utext
+                        last_insert_id_name = token.text .. "()"
                     end
                 end
 
@@ -820,6 +818,12 @@ function read_query( packet )
         end
     end
 
+    if rw_op then
+        stats.query_info.rw = stats.query_info.rw + 1
+    else
+        stats.query_info.ro = stats.query_info.ro + 1
+    end
+
     -- in case the master is down, we have to close the client connections
     -- otherwise we can go on
     if backend_ndx == 0 then
@@ -838,16 +842,8 @@ function read_query( packet )
     end
 
     if rw_op then
-        stats.query_info.rw = stats.query_info.rw + 1
-        if is_debug and stats.query_info.rw % 100 == 0 then
-            print("rw stat:" .. stats.query_info.rw)
-            print("ro stat:" .. stats.query_info.ro)
-            print("master executed:" .. stats.backend_info.rw)
-            print("ro server executed:" .. stats.backend_info.ro)
-        end
         stats.backend_details[backend_ndx].rw = stats.backend_details[backend_ndx].rw + 1
     else
-        stats.query_info.ro = stats.query_info.ro + 1
         stats.backend_details[backend_ndx].ro = stats.backend_details[backend_ndx].ro + 1
     end
 

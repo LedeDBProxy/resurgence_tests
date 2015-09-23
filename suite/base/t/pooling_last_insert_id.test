@@ -1,0 +1,163 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#  测试用例的目的：
+#      测试多个连接的last_insert_id是否能够正确返回
+
+#set up parameters
+
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+let $default_db= $DEFAULT_DB;
+
+disable_ps_protocol;
+
+# Prepare data
+connect (conn1,$ip,$user,$pwd,$default_db,$port); 
+
+--disable_warnings
+DROP TABLE IF EXISTS t_insertid;
+--enable_warnings
+
+CREATE TABLE t_insertid (
+  `id` int(11) NOT NULL	AUTO_INCREMENT,
+  `data` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO t_insertid (data) VALUES ('a');
+SELECT id FROM t_insertid;
+
+disconnect conn1;
+
+# Main running
+connect (conn2,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('b');
+SELECT LAST_INSERT_ID();
+
+connect (conn3,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('c');
+SELECT LAST_INSERT_ID();
+
+connect (conn4,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('d');
+SELECT LAST_INSERT_ID();
+
+disconnect conn2;
+disconnect conn3;
+disconnect conn4;
+
+temp_disable_ps_protocol;
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port);
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+enable_ps_protocol;
+
+connect (conn5,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('e');
+
+connect (conn6,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('f');
+
+connect (conn7,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('g');
+INSERT INTO t_insertid (data) VALUES ('g');
+
+connect (conn8,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('h');
+INSERT INTO t_insertid (data) VALUES ('h');
+
+connect (conn9,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('i');
+INSERT INTO t_insertid (data) VALUES ('i');
+INSERT INTO t_insertid (data) VALUES ('i');
+
+connect (conn10,$ip,$user,$pwd,$default_db,$port); 
+INSERT INTO t_insertid (data) VALUES ('j');
+INSERT INTO t_insertid (data) VALUES ('j');
+INSERT INTO t_insertid (data) VALUES ('j');
+
+connection conn5;
+SELECT LAST_INSERT_ID();
+select @@last_insert_id;
+connection conn6;
+SELECT LAST_INSERT_ID();
+select @@last_insert_id;
+connection conn7;
+SELECT LAST_INSERT_ID();
+select @@last_insert_id;
+connection conn8;
+SELECT LAST_INSERT_ID();
+select @@last_insert_id;
+connection conn9;
+SELECT LAST_INSERT_ID();
+select @@last_insert_id;
+connection conn10;
+SELECT LAST_INSERT_ID();
+select @@last_insert_id;
+
+disconnect conn5;
+disconnect conn6;
+disconnect conn7;
+disconnect conn8;
+disconnect conn9;
+disconnect conn10;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+connect (conn11,$ip,$user,$pwd,$default_db,$port);
+INSERT INTO t_insertid (data) VALUES ('k');
+real_sleep 0.2;
+SELECT id FROM t_insertid where data='k';
+SELECT LAST_INSERT_ID();
+SELECT id FROM t_insertid where data='k';
+SELECT last_INSERT_ID();
+SELECT id FROM t_insertid where data='k';
+SELECT @@last_insert_id;
+SELECT id FROM t_insertid where data='k';
+SELECT @@LAST_insert_id;
+disconnect conn11;
+
+connect (conn12,$ip,$user,$pwd,$default_db,$port);
+INSERT INTO t_insertid (data) VALUES ('l');
+real_sleep 0.2;
+SELECT id FROM t_insertid where data='l';
+SELECT id, data FROM t_insertid where id=LAST_INSERT_ID();
+SELECT id, data FROM t_insertid where id=@@last_insert_id;
+disconnect conn12;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+disconnect conn0;
+
+# Delete data
+connect (conn13,$ip,$user,$pwd,$default_db,$port);
+DROP TABLE t_insertid;
+disconnect conn13;
