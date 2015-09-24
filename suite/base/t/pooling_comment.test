@@ -1,0 +1,173 @@
+#  $%BEGINLICENSE%$
+#  Copyright (c) 2008, 2012, Oracle and/or its affiliates. All rights reserved.
+# 
+#  This program is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU General Public License as
+#  published by the Free Software Foundation; version 2 of the
+#  License.
+# 
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+# 
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+#  02110-1301  USA
+# 
+#  $%ENDLICENSE%$
+#  测试用例的目的：
+#      测试多个连接的last_insert_id是否能够正确返回
+
+#set up parameters
+
+let $ip= $PROXY_HOST;
+let $admin_ip= $PROXY_HOST;
+let $port= $PROXY_PORT;
+let $admin_port= $PROXY_ADMIN_PORT;
+let $user= $MYSQL_USER;
+let $pwd= $MYSQL_PASSWORD;
+let $proxy_admin_pwd= $PROXY_ADMIN_PASSWORD;
+let $default_db= $DEFAULT_DB;
+
+disable_ps_protocol;
+
+# Prepare data
+connect (conn1,$ip,$user,$pwd,$default_db,$port); 
+
+--disable_warnings
+DROP TABLE IF EXISTS t_comment;
+--enable_warnings
+
+CREATE TABLE t_comment (
+  `id` int(11) NOT NULL	AUTO_INCREMENT,
+  `n` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO t_comment (n) VALUES (1);
+INSERT INTO t_comment (n) VALUES (2);
+INSERT INTO t_comment (n) VALUES (3);
+INSERT INTO t_comment (n) VALUES (4);
+SELECT * FROM t_comment;
+
+disconnect conn1;
+
+connect (conn0,$admin_ip,$user,$proxy_admin_pwd,,$admin_port);
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+# Main running
+enable_ps_protocol;
+
+connect (conn2,$ip,$user,$pwd,$default_db,$port);
+/*master*/SELECT id FROM t_comment WHERE id=1;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+enable_ps_protocol;
+
+# Cause no idle connection for ro backend, 
+# errors occur when we connect to "slave" or "backend2"
+connection conn2;
+--error 1105
+/*slave*/SELECT id FROM t_comment WHERE id=2;
+/*backend1*/SELECT id FROM t_comment WHERE id=2;
+--error 1105
+/*backend2*/SELECT id FROM t_comment WHERE id=2;
+--error 1105
+/*backend3*/SELECT id FROM t_comment WHERE id=2;
+/*master slave*/SELECT id FROM t_comment WHERE id=2;
+/*master backend2*/SELECT id FROM t_comment WHERE id=2;
+--error 1105
+/*slave backend1*/SELECT id FROM t_comment WHERE id=2;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+disconnect conn2;
+
+# Create connections
+enable_ps_protocol;
+
+connect (conn3,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+connect (conn4,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+connect (conn5,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+connect (conn6,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+connect (conn7,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+
+real_sleep 0.2;
+
+connect (conn8,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+connect (conn9,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+connect (conn10,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+connect (conn11,$ip,$user,$pwd,$default_db,$port);
+SELECT * FROM t_comment WHERE id=3;
+
+real_sleep 0.2;
+
+disconnect conn3;
+disconnect conn4;
+disconnect conn5;
+disconnect conn6;
+disconnect conn7;
+disconnect conn8;
+disconnect conn9;
+disconnect conn10;
+disconnect conn11;
+
+real_sleep 0.2;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+
+connect (conn12,$ip,$user,$pwd,$default_db,$port);
+SELECT /*Master*/ id FROM t_comment WHERE id=4;
+/*MASTER*/SELECT id FROM t_comment WHERE id=4;
+SELECT /*Slave*/ id FROM t_comment WHERE id=4;
+/*SLAVE*/SELECT id FROM t_comment WHERE id=4;
+SELECT id FROM t_comment WHERE id=4 /*backend1*/;
+SELECT id FROM t_comment WHERE id=4 /*backend2*/;
+--error 1105
+SELECT id FROM t_comment WHERE id=4 /*backend3*/;
+disconnect conn12;
+
+# Test by var "bind_address"
+enable_ps_protocol;
+connect (conn15,$ip,$user,$pwd,$default_db,$port);
+/*master*/SHOW VARIABLES LIKE "bind_address";
+/*slave*/SHOW VARIABLES LIKE "bind_address";
+/*backend1*/SHOW VARIABLES LIKE "bind_address";
+/*backend2*/SHOW VARIABLES LIKE "bind_address";
+/*master slave*/SHOW VARIABLES LIKE "bind_address";
+/*master backend2*/SHOW VARIABLES LIKE "bind_address";
+/*slave backend1*/SHOW VARIABLES LIKE "bind_address";
+
+disconnect conn15;
+
+temp_disable_ps_protocol;
+connection conn0;
+eval select conn_num from backends where backend_ndx = 1 and user = "$user";
+eval select conn_num from backends where backend_ndx = 2 and user = "$user";
+disconnect conn0;
+
+# Delete data
+connect (conn16,$ip,$user,$pwd,$default_db,$port);
+DROP TABLE t_comment;
+disconnect conn16;

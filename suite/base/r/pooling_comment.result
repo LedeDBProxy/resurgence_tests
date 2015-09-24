@@ -1,0 +1,135 @@
+DROP TABLE IF EXISTS t_comment;
+CREATE TABLE t_comment (
+`id` int(11) NOT NULL	AUTO_INCREMENT,
+`n` int(11) DEFAULT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO t_comment (n) VALUES (1);
+INSERT INTO t_comment (n) VALUES (2);
+INSERT INTO t_comment (n) VALUES (3);
+INSERT INTO t_comment (n) VALUES (4);
+SELECT * FROM t_comment;
+id	n
+1	1
+2	2
+3	3
+4	4
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+2
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+/*master*/SELECT id FROM t_comment WHERE id=1;
+id
+1
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+2
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+/*slave*/SELECT id FROM t_comment WHERE id=2;
+ERROR 07000: ro backends have no idle connections
+/*backend1*/SELECT id FROM t_comment WHERE id=2;
+id
+2
+/*backend2*/SELECT id FROM t_comment WHERE id=2;
+ERROR 07000: backend [2] has no idle connections
+/*backend3*/SELECT id FROM t_comment WHERE id=2;
+ERROR 07000: backend [3] is out of range
+/*master slave*/SELECT id FROM t_comment WHERE id=2;
+id
+2
+/*master backend2*/SELECT id FROM t_comment WHERE id=2;
+id
+2
+/*slave backend1*/SELECT id FROM t_comment WHERE id=2;
+ERROR 07000: ro backends have no idle connections
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+2
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+0
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+SELECT * FROM t_comment WHERE id=3;
+id	n
+3	3
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+11
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+1
+SELECT /*Master*/ id FROM t_comment WHERE id=4;
+id
+4
+/*MASTER*/SELECT id FROM t_comment WHERE id=4;
+id
+4
+SELECT /*Slave*/ id FROM t_comment WHERE id=4;
+id
+4
+/*SLAVE*/SELECT id FROM t_comment WHERE id=4;
+id
+4
+SELECT id FROM t_comment WHERE id=4 /*backend1*/;
+id
+4
+SELECT id FROM t_comment WHERE id=4 /*backend2*/;
+id
+4
+SELECT id FROM t_comment WHERE id=4 /*backend3*/;
+ERROR 07000: backend [3] is out of range
+/*master*/SHOW VARIABLES LIKE "bind_address";
+Variable_name	Value
+bind_address	10.110.12.190
+/*slave*/SHOW VARIABLES LIKE "bind_address";
+Variable_name	Value
+bind_address	10.110.12.193
+/*backend1*/SHOW VARIABLES LIKE "bind_address";
+Variable_name	Value
+bind_address	10.110.12.190
+/*backend2*/SHOW VARIABLES LIKE "bind_address";
+Variable_name	Value
+bind_address	10.110.12.193
+/*master slave*/SHOW VARIABLES LIKE "bind_address";
+Variable_name	Value
+bind_address	10.110.12.190
+/*master backend2*/SHOW VARIABLES LIKE "bind_address";
+Variable_name	Value
+bind_address	10.110.12.190
+/*slave backend1*/SHOW VARIABLES LIKE "bind_address";
+Variable_name	Value
+bind_address	10.110.12.193
+select conn_num from backends where backend_ndx = 1 and user = "root";
+connection_num
+11
+select conn_num from backends where backend_ndx = 2 and user = "root";
+connection_num
+3
+DROP TABLE t_comment;
